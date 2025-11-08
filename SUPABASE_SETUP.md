@@ -85,14 +85,15 @@ Supabase Dashboard
 
 ---
 
-## Your Current Values
+## Next Steps
 
-Based on your anon key, your project URL is:
+After copying your credentials, add them to your `.env.local` file:
+
 ```
-https://pygfjqbwvnijbrfcdceg.supabase.co
+NEXT_PUBLIC_SUPABASE_URL=your-project-url-here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
 ```
 
-This is already in your `.env.local` file!
-
-You just need to get the **service_role key** from the same API settings page.
+Make sure to get the **service_role key** from the same API settings page and add it to your `.env.local` file.
 
