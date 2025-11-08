@@ -20,11 +20,15 @@ export default function SignupPage() {
 
     try {
       const supabase = createClient()
+      // Use window.location.origin which will be correct in production (https://trade-stack.vercel.app)
+      // Make sure to also configure redirect URLs in Supabase dashboard (see SUPABASE_REDIRECT_SETUP.md)
+      const redirectUrl = `${window.location.origin}/onboarding`
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/onboarding`,
+          emailRedirectTo: redirectUrl,
         },
       })
 
