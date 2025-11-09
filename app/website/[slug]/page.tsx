@@ -1,14 +1,15 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 
-export default async function WebsitePage({ params }: { params: { slug: string } }) {
+export default async function WebsitePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const supabase = await createClient()
 
   // Get website settings
   const { data: websiteSettings } = await supabase
     .from('website_settings')
     .select('*')
-    .eq('website_slug', params.slug)
+    .eq('website_slug', slug)
     .eq('is_published', true)
     .single()
 
@@ -66,7 +67,7 @@ export default async function WebsitePage({ params }: { params: { slug: string }
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <a 
-                href={`/website/${params.slug}`}
+                href={`/website/${slug}`}
                 className="text-2xl font-bold text-white hover:opacity-90 transition-opacity"
               >
                 {profile?.business_name || 'My Website'}
@@ -77,7 +78,7 @@ export default async function WebsitePage({ params }: { params: { slug: string }
                 {allPages.map((page) => (
                   <a
                     key={page.id}
-                    href={page.is_homepage ? `/website/${params.slug}` : `/website/${params.slug}/${page.slug}`}
+                    href={page.is_homepage ? `/website/${slug}` : `/website/${slug}/${page.slug}`}
                     className="text-white hover:text-gray-200 transition-colors text-sm font-medium"
                   >
                     {page.title}

@@ -3,14 +3,15 @@ import { notFound } from 'next/navigation'
 import QuoteForm from '@/components/QuoteForm'
 import { formatCurrency } from '@/lib/utils'
 
-export default async function PublicPage({ params }: { params: { slug: string } }) {
+export default async function PublicPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const supabase = await createClient()
 
   // Get profile
   const { data: profile } = await supabase
     .from('profiles')
     .select('*')
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .single()
 
   if (!profile) {

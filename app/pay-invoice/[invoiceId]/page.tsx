@@ -42,7 +42,8 @@ export default function PayInvoicePage() {
         throw new Error(data.error || 'Invoice not found')
       }
 
-      setInvoice(data.invoice)
+      // Ensure status includes all possible values
+      setInvoice(data.invoice as Invoice)
     } catch (err: any) {
       setError(err.message || 'Failed to load invoice')
     } finally {
@@ -156,11 +157,13 @@ export default function PayInvoicePage() {
                 )}
                 <p className="text-slate-300 text-sm mt-2">
                   Status: <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    invoice.status === 'sent' ? 'bg-blue-500/20 text-blue-300' :
-                    invoice.status === 'overdue' ? 'bg-red-500/20 text-red-300' :
+                    (invoice.status as string) === 'sent' ? 'bg-blue-500/20 text-blue-300' :
+                    (invoice.status as string) === 'paid' ? 'bg-green-500/20 text-green-300' :
+                    (invoice.status as string) === 'overdue' ? 'bg-red-500/20 text-red-300' :
+                    (invoice.status as string) === 'cancelled' ? 'bg-slate-500/20 text-slate-300' :
                     'bg-slate-500/20 text-slate-300'
                   }`}>
-                    {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+                    {(invoice.status as string).charAt(0).toUpperCase() + (invoice.status as string).slice(1)}
                   </span>
                 </p>
               </div>
@@ -229,7 +232,7 @@ export default function PayInvoicePage() {
             <div className="text-center">
               <button
                 onClick={handlePay}
-                disabled={processing || invoice.status === 'paid' || invoice.status === 'cancelled'}
+                disabled={processing || ['paid', 'cancelled'].includes(invoice.status as string)}
                 className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all shadow-lg shadow-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 mx-auto"
               >
                 {processing ? (

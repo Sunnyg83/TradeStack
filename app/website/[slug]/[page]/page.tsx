@@ -4,15 +4,16 @@ import { notFound } from 'next/navigation'
 export default async function WebsitePageRoute({ 
   params 
 }: { 
-  params: { slug: string; page: string } 
+  params: Promise<{ slug: string; page: string }> 
 }) {
+  const { slug, page: pageSlug } = await params
   const supabase = await createClient()
 
   // Get website settings
   const { data: websiteSettings } = await supabase
     .from('website_settings')
     .select('*')
-    .eq('website_slug', params.slug)
+    .eq('website_slug', slug)
     .eq('is_published', true)
     .single()
 
@@ -25,7 +26,7 @@ export default async function WebsitePageRoute({
     .from('website_pages')
     .select('*')
     .eq('user_id', websiteSettings.user_id)
-    .eq('slug', params.page)
+    .eq('slug', pageSlug)
     .eq('is_published', true)
     .single()
 
@@ -62,7 +63,7 @@ export default async function WebsitePageRoute({
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <a 
-                href={`/website/${params.slug}`}
+                href={`/website/${slug}`}
                 className="text-2xl font-bold text-white hover:opacity-90 transition-opacity"
               >
                 {profile?.business_name || 'My Website'}
@@ -73,7 +74,7 @@ export default async function WebsitePageRoute({
                 {allPages.map((p) => (
                   <a
                     key={p.id}
-                    href={p.is_homepage ? `/website/${params.slug}` : `/website/${params.slug}/${p.slug}`}
+                    href={p.is_homepage ? `/website/${slug}` : `/website/${slug}/${p.slug}`}
                     className={`transition-colors text-sm font-medium ${
                       p.id === page.id 
                         ? 'text-white font-bold underline' 
