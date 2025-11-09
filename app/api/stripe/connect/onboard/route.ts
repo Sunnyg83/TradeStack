@@ -3,7 +3,6 @@ import { createClient } from '@/lib/supabase/server'
 import Stripe from 'stripe'
 
 // Initialize Stripe client for Connect onboarding
-// Note: Stripe Connect must be enabled in your Stripe Dashboard before users can connect
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   apiVersion: '2025-10-29.clover',
 })
