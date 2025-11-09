@@ -32,7 +32,14 @@ export default function SignupPage() {
         },
       })
 
-      if (error) throw error
+      if (error) {
+        // Check if user already exists
+        if (error.message.includes('already registered') || error.message.includes('User already registered')) {
+          setError('An account with this email already exists. Please sign in or use forgot password if you don\'t remember your password.')
+          return
+        }
+        throw error
+      }
 
       // Check if email confirmation is required
       if (data.user && !data.session) {
@@ -48,7 +55,10 @@ export default function SignupPage() {
       }
     } catch (error: any) {
       console.error('Signup error:', error)
-      setError(error.message || 'An error occurred')
+      // Only set error if we haven't already set a custom one
+      if (!error.message.includes('already registered')) {
+        setError(error.message || 'An error occurred')
+      }
     } finally {
       setLoading(false)
     }
@@ -110,7 +120,24 @@ export default function SignupPage() {
             <form onSubmit={handleSignup} className="space-y-6 rounded-xl bg-slate-800/60 backdrop-blur-xl border border-blue-500/20 p-8 shadow-xl">
               {error && (
                 <div className="rounded-lg bg-red-950/30 border border-red-500/20 p-3 text-sm text-red-400">
-                  {error}
+                  <p className="mb-2">{error}</p>
+                  {error.includes('already exists') && (
+                    <div className="mt-3 flex gap-2">
+                      <Link
+                        href="/login"
+                        className="text-blue-400 hover:text-blue-300 underline text-xs"
+                      >
+                        Sign In
+                      </Link>
+                      <span className="text-slate-500">•</span>
+                      <Link
+                        href="/forgot-password"
+                        className="text-blue-400 hover:text-blue-300 underline text-xs"
+                      >
+                        Forgot Password
+                      </Link>
+                    </div>
+                  )}
                 </div>
               )}
 
