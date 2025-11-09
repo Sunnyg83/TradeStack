@@ -81,3 +81,78 @@ export interface Settings {
   updated_at: string
 }
 
+export interface WebsiteSettings {
+  id: string
+  user_id: string
+  website_slug: string | null
+  theme_name: string
+  primary_color: string
+  secondary_color: string
+  font_family: string
+  is_published: boolean
+  custom_domain: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface WebsitePage {
+  id: string
+  user_id: string
+  title: string
+  slug: string
+  content: Record<string, any>
+  is_homepage: boolean
+  is_published: boolean
+  order_index: number
+  meta_title: string | null
+  meta_description: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface InvoiceItem {
+  description: string
+  quantity: number
+  unit_price: number
+  total: number
+}
+
+export interface Invoice {
+  id: string
+  user_id: string
+  invoice_number: string
+  client_name: string
+  client_email: string | null
+  client_phone: string | null
+  amount: number
+  tax_amount: number
+  total_amount: number
+  currency: string
+  description: string | null
+  items: InvoiceItem[]
+  status: 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled'
+  due_date: string | null
+  issued_date: string | null
+  paid_date: string | null
+  notes: string | null
+  stripe_payment_intent_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface Payment {
+  id: string
+  invoice_id: string
+  user_id: string
+  amount: number
+  currency: string
+  payment_method: string | null
+  stripe_payment_intent_id: string | null
+  stripe_charge_id: string | null
+  status: 'pending' | 'processing' | 'succeeded' | 'failed' | 'refunded'
+  transaction_id: string | null
+  metadata: Record<string, any>
+  created_at: string
+  updated_at: string
+}
+
