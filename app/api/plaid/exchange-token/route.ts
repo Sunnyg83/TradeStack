@@ -27,15 +27,61 @@ export async function POST(request: NextRequest) {
     const plaidSecret = process.env.PLAID_SECRET?.trim()
     const plaidEnv = process.env.PLAID_ENV?.trim() || 'sandbox'
     
-    if (!plaidClientId || !plaidSecret) {
-      const missing = []
-      if (!plaidClientId) missing.push('PLAID_CLIENT_ID')
-      if (!plaidSecret) missing.push('PLAID_SECRET')
+    // Check for missing or placeholder values
+    const isProduction = process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production'
+    const missing = []
+    const invalid = []
+    
+    if (!plaidClientId || plaidClientId === 'your_client_id_here' || plaidClientId.length < 10) {
+      if (!plaidClientId) {
+        missing.push('PLAID_CLIENT_ID')
+      } else {
+        invalid.push('PLAID_CLIENT_ID (appears to be placeholder or invalid)')
+      }
+    }
+    
+    if (!plaidSecret || plaidSecret === 'your_sandbox_secret_here' || plaidSecret.length < 20) {
+      if (!plaidSecret) {
+        missing.push('PLAID_SECRET')
+      } else {
+        invalid.push('PLAID_SECRET (appears to be placeholder or invalid)')
+      }
+    }
+    
+    if (missing.length > 0 || invalid.length > 0) {
+      const errorMessage = isProduction
+        ? `Plaid is not configured in production. Please add your Plaid environment variables in Vercel:\n\n` +
+          `1. Go to your Vercel project settings\n` +
+          `2. Navigate to Environment Variables\n` +
+          `3. Add the following variables:\n` +
+          `   - PLAID_CLIENT_ID: Your Plaid Client ID\n` +
+          `   - PLAID_SECRET: Your Plaid ${plaidEnv === 'production' ? 'Production' : 'Sandbox'} Secret\n` +
+          `   - PLAID_ENV: ${plaidEnv}\n\n` +
+          `Get your keys from: https://dashboard.plaid.com → Team Settings → Keys\n\n` +
+          `Missing: ${missing.join(', ')}\n` +
+          (invalid.length > 0 ? `Invalid: ${invalid.join(', ')}\n` : '') +
+          `\nAfter adding, redeploy your application.`
+        : `Plaid is not configured. Please add your Plaid keys to .env.local:\n\nMissing: ${missing.join(', ')}\n` +
+          (invalid.length > 0 ? `Invalid: ${invalid.join(', ')}\n` : '') +
+          `\nGet your keys from: https://dashboard.plaid.com → Team Settings → Keys`
+      
+      console.error('Plaid configuration error:', {
+        missing,
+        invalid,
+        isProduction,
+        plaidEnv,
+        hasClientId: !!plaidClientId,
+        hasSecret: !!plaidSecret,
+        clientIdLength: plaidClientId?.length || 0,
+        secretLength: plaidSecret?.length || 0,
+      })
       
       return NextResponse.json(
         { 
-          error: `Plaid is not configured. Please add your Plaid keys to .env.local:\n\nMissing: ${missing.join(', ')}\n\nGet your keys from: https://dashboard.plaid.com → Team Settings → Keys`,
+          error: errorMessage,
           missing_keys: missing,
+          invalid_keys: invalid,
+          environment: isProduction ? 'production' : 'development',
         },
         { status: 500 }
       )
