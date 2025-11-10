@@ -57,7 +57,7 @@ export interface AdTemplate {
   headline: string
   body: string
   fb_caption: string | null
-  nextdoor_caption: string | null
+  craigslist_caption: string | null
   instagram_caption: string | null
   created_at: string
 }
@@ -154,5 +154,32 @@ export interface Payment {
   metadata: Record<string, any>
   created_at: string
   updated_at: string
+}
+
+export interface SocialMediaAccount {
+  id: string
+  user_id: string
+  platform: 'facebook' | 'instagram'
+  access_token: string
+  page_id: string | null
+  page_name: string | null
+  instagram_account_id: string | null
+  instagram_username: string | null
+  expires_at: string | null
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface AdPost {
+  id: string
+  ad_template_id: string
+  user_id: string
+  platform: 'facebook' | 'instagram' | 'craigslist'
+  post_id: string | null
+  status: 'pending' | 'posted' | 'failed'
+  error_message: string | null
+  posted_at: string | null
+  created_at: string
 }
 

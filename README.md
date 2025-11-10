@@ -1,4 +1,4 @@
-# TradeStack
+TradeStack
 
 **CRM software for tradespeople** - Manage your trade business with invoicing, payments, leads, and AI-powered tools.
 
@@ -13,15 +13,4 @@
 ![Plaid](https://img.shields.io/badge/Plaid-Banking-000000?style=for-the-badge)
 ![Google Gemini](https://img.shields.io/badge/Google%20Gemini-AI-4285F4?style=for-the-badge&logo=google)
 ![Vercel](https://img.shields.io/badge/Vercel-Deploy-000000?style=for-the-badge&logo=vercel)
-
-### Core Technologies
-- **Framework:** Next.js 16, React 19
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS 4
-- **Database & Auth:** Supabase
-- **Payments:** Stripe, Plaid
-- **AI:** Google Gemini
-- **Email:** Resend
-- **Forms:** React Hook Form, Zod
-- **Charts:** Recharts
 

@@ -25,10 +25,10 @@ Create:
 1. A short, catchy headline (max 60 characters)
 2. Ad body text (2-3 sentences, compelling)
 3. Facebook caption (engaging, with emoji if appropriate)
-4. Nextdoor caption (neighborhood-focused, friendly)
+4. Craigslist caption (friendly, localized, include call-to-action and contact info)
 5. Instagram caption (visual, engaging, with relevant hashtags)
 
-Format as JSON with keys: headline, body, fb_caption, nextdoor_caption, instagram_caption`
+Format as JSON with keys: headline, body, fb_caption, craigslist_caption, instagram_caption`
 
     let content
     try {
@@ -67,7 +67,7 @@ Format as JSON with keys: headline, body, fb_caption, nextdoor_caption, instagra
         headline: lines[0] || `Professional ${service} in ${city}`,
         body: lines.slice(1, 3).join(' ') || `Looking for ${service} in ${city}? We provide reliable, professional service.`,
         fb_caption: lines[3] || `Need ${service} in ${city}? Contact us today!`,
-        nextdoor_caption: lines[4] || `Hi neighbors! Offering ${service} services in ${city}. Local and reliable!`,
+        craigslist_caption: lines[4] || `${service} services available in ${city}. Local, reliable, free estimates. Call today!`,
         instagram_caption: lines[5] || `${service} services in ${city} ✨ #${city.replace(/\s/g, '')} #${service.replace(/\s/g, '')}`,
       }
     }
@@ -82,7 +82,7 @@ Format as JSON with keys: headline, body, fb_caption, nextdoor_caption, instagra
         headline: adContent.headline,
         body: adContent.body,
         fb_caption: adContent.fb_caption || null,
-        nextdoor_caption: adContent.nextdoor_caption || null,
+        craigslist_caption: adContent.craigslist_caption || null,
         instagram_caption: adContent.instagram_caption || null,
       })
       .select()

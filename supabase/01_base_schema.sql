@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS ad_templates (
   headline TEXT NOT NULL,
   body TEXT NOT NULL,
   fb_caption TEXT,
-  nextdoor_caption TEXT,
+  craigslist_caption TEXT,
   instagram_caption TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );

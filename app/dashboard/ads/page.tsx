@@ -4,21 +4,199 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { AdTemplate, Service } from '@/lib/types/database'
 
+type FormMode = 'manual' | 'ai'
+
+interface PreMadeTemplate {
+  service: string
+  headline: string
+  body: string
+  fbCaption: string
+  craigslistCaption: string
+  instagramCaption: string
+}
+
+const PRE_MADE_TEMPLATES: PreMadeTemplate[] = [
+  {
+    service: 'Drain Cleaning',
+    headline: 'Clogged Drains Got You Down? We\'ll Flush Away Your Troubles!',
+    body: 'Don\'t let clogged drains ruin your day! We\'re your friendly, local drain cleaning experts, ready to get your pipes flowing freely again. Call us today for fast, reliable service and a free estimate!',
+    fbCaption: 'Uh oh, is your sink looking a little *too* full? 🛁 Clogged drains are no match for our expert team! 💪 Get fast, affordable drain cleaning. Give us a call or message us to schedule your appointment! ➡️',
+    craigslistCaption: 'Professional drain cleaning available in the San Francisco area. Licensed & insured, same-day service, free estimates. Call or text to book your appointment!',
+    instagramCaption: 'Nothing\'s worse than a stubborn clog! 🚫 We\'re here to rescue you from drain disasters. Check out this before & after! ✨ Swipe to see the magic! 😉 Call us for a free estimate and get your pipes flowing freely again. #DrainCleaning #Plumbing #HomeImprovement #BeforeAndAfter'
+  },
+  {
+    service: 'HVAC',
+    headline: 'Stay Cool in Summer, Warm in Winter - Expert HVAC Service!',
+    body: 'Your comfort is our priority! Professional heating and cooling services to keep your home at the perfect temperature year-round. Licensed, insured, and ready to help. Schedule your service today!',
+    fbCaption: 'Is your AC struggling? ❄️ Or maybe your heater isn\'t keeping you warm? 🔥 We\'ve got you covered! Expert HVAC service with same-day availability. Call now for a free estimate! #HVAC #HeatingCooling',
+    craigslistCaption: 'Heating or cooling issues? Licensed HVAC specialists serving the local area. Repairs, installs, tune-ups. Call today for priority scheduling and free estimates!',
+    instagramCaption: 'Beat the heat (or cold)! 🌡️ Professional HVAC service that keeps your home comfortable all year long. Quality work, fair prices, and customer satisfaction guaranteed! 📞 Call for a free consultation! #HVAC #ACRepair #Heating #HomeComfort'
+  },
+  {
+    service: 'Electrical',
+    headline: 'Power Up Your Home - Licensed Electricians You Can Trust!',
+    body: 'Electrical issues? Don\'t wait! Our licensed electricians provide safe, reliable electrical services for your home or business. From repairs to installations, we\'ve got the power to help. Free estimates available!',
+    fbCaption: '⚡ Electrical problems? We\'re here to help! Licensed, insured electricians ready to tackle any electrical job. Safety first, quality always. Call today for fast, professional service!',
+    craigslistCaption: 'Licensed electricians available for residential and light commercial jobs. Breakers, lighting, EV chargers, troubleshooting. Fast response—call or message for a quote!',
+    instagramCaption: 'Power up your space! ⚡️ Licensed electricians providing top-notch electrical services. From simple repairs to full installations, we do it all safely and efficiently. DM for a free quote! #Electrician #ElectricalWork #HomeImprovement #SafetyFirst'
+  },
+  {
+    service: 'Landscaping',
+    headline: 'Transform Your Outdoor Space - Beautiful Landscaping Awaits!',
+    body: 'Turn your yard into a stunning outdoor oasis! Professional landscaping services including design, installation, and maintenance. Let us bring your vision to life. Free consultations available!',
+    fbCaption: '🌳 Dreaming of a beautiful yard? We make it happen! Professional landscaping services to transform your outdoor space. Design, installation, and maintenance - we do it all! Get your free quote today!',
+    craigslistCaption: 'Need help with your yard? Full-service landscaping: design, installation, maintenance. Serving the local area with free on-site consultations. Call today!',
+    instagramCaption: 'From drab to fab! 🌿✨ Professional landscaping that transforms your outdoor space. Check out our latest project! Swipe to see the transformation. Ready to create your dream yard? Let\'s chat! #Landscaping #GardenDesign #OutdoorLiving #BeforeAndAfter'
+  },
+  {
+    service: 'Cleaning Services',
+    headline: 'Sparkle & Shine - Professional Cleaning Services!',
+    body: 'Too busy to clean? We\'ve got you covered! Professional cleaning services for homes and offices. Reliable, thorough, and affordable. Book your cleaning today and enjoy a spotless space!',
+    fbCaption: '✨ Tired of cleaning? Let us handle it! Professional cleaning services that leave your space sparkling. Homes, offices, move-in/out - we do it all! Book now and relax! 🧹',
+    craigslistCaption: 'Professional house & office cleaning. Weekly, bi-weekly, move-in/out. Detail-focused, insured crew, supplies included. Free quote—call or text!',
+    instagramCaption: 'Clean space, clear mind! ✨ Professional cleaning services that make your life easier. From regular maintenance to deep cleans, we\'ve got you covered. Book your spotless transformation today! #CleaningService #HouseCleaning #ProfessionalCleaning #CleanHome'
+  },
+  {
+    service: 'Handyman',
+    headline: 'Fix It All - Your Trusted Handyman Service!',
+    body: 'Honey-do list piling up? We\'re here to help! From small repairs to bigger projects, our experienced handyman team can tackle it all. Quality work, fair prices, and satisfaction guaranteed!',
+    fbCaption: '🔧 Got a to-do list? We\'re your solution! Professional handyman services for all your home repair and improvement needs. No job too small! Call today for fast, reliable service.',
+    craigslistCaption: 'Local handyman ready to tackle punch lists, repairs, installs, and upgrades. Reliable, insured, honest pricing. Call now to schedule your project!',
+    instagramCaption: 'One call, we fix it all! 🔨 Professional handyman services for your home. From leaky faucets to full renovations, we\'ve got the skills and tools. Quality work you can trust! #Handyman #HomeRepair #DIY #HomeImprovement'
+  },
+  {
+    service: 'Roofing',
+    headline: 'Protect Your Home - Expert Roofing Services!',
+    body: 'A strong roof protects everything you value. Professional roofing services including repairs, replacements, and maintenance. Licensed, insured, and committed to quality. Free inspections available!',
+    fbCaption: '🏠 Roof problems? Don\'t wait for leaks! Expert roofing services to protect your home. Repairs, replacements, and maintenance - we do it all. Licensed and insured. Free estimates!',
+    craigslistCaption: 'Roof repairs & replacements done right. Licensed crew, quality materials, emergency tarping available. Serving the Bay Area—call for a free inspection!',
+    instagramCaption: 'Protect what matters most! 🏠 Professional roofing services that keep your home safe and dry. Quality materials, expert installation, and peace of mind. Free inspections available! #Roofing #HomeProtection #RoofRepair #QualityWork'
+  },
+  {
+    service: 'Painting',
+    headline: 'Fresh Paint, Fresh Start - Professional Painting Services!',
+    body: 'Transform your space with a fresh coat of paint! Professional interior and exterior painting services. Quality work, attention to detail, and beautiful results. Get your free estimate today!',
+    fbCaption: '🎨 Ready for a fresh look? Professional painting services for your home or business. Interior, exterior, we do it all! Quality paint, expert application, stunning results. Free estimates!',
+    craigslistCaption: 'Professional interior/exterior painting. Prep, repairs, color consults, clean finish. Licensed & insured with references. Call today for a free estimate!',
+    instagramCaption: 'Color your world! 🎨 Professional painting that brings your vision to life. Check out this stunning transformation! Swipe to see the before and after. Ready to refresh your space? #Painting #HomeImprovement #InteriorDesign #BeforeAndAfter'
+  }
+]
+
 export default function AdsPage() {
   const [services, setServices] = useState<Service[]>([])
   const [templates, setTemplates] = useState<AdTemplate[]>([])
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
   const [showForm, setShowForm] = useState(false)
+  const [showTemplateSelector, setShowTemplateSelector] = useState(false)
+  const [formMode, setFormMode] = useState<FormMode | null>(null)
   const [formData, setFormData] = useState({
     service: '',
     city: '',
     tone: 'friendly',
   })
+  const [manualData, setManualData] = useState({
+    service: '',
+    city: '',
+    headline: '',
+    body: '',
+    fbCaption: '',
+    craigslistCaption: '',
+    instagramCaption: '',
+  })
+  const [autoPost, setAutoPost] = useState<{ facebook: boolean; instagram: boolean }>({
+    facebook: false,
+    instagram: false,
+  })
+  const [savingManual, setSavingManual] = useState(false)
+  const [facebookStatus, setFacebookStatus] = useState<{
+    connected: boolean
+    pageName: string | null
+    hasInstagram: boolean
+    instagramUsername: string | null
+  } | null>(null)
+  const [posting, setPosting] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     loadData()
+    checkFacebookStatus()
+    
+    // Check for success/error messages in URL
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      const connected = params.get('connected')
+      const error = params.get('error')
+      
+      if (connected === 'facebook') {
+        alert('Successfully connected to Facebook!')
+        checkFacebookStatus() // Refresh status
+        // Clean up URL
+        window.history.replaceState({}, '', window.location.pathname)
+      }
+      
+      if (error) {
+        alert(decodeURIComponent(error))
+        // Clean up URL
+        window.history.replaceState({}, '', window.location.pathname)
+      }
+    }
   }, [])
+
+  const checkFacebookStatus = async () => {
+    try {
+      const response = await fetch('/api/facebook/status')
+      if (response.ok) {
+        const data = await response.json()
+        setFacebookStatus(data.facebook)
+      }
+    } catch (error) {
+      console.error('Error checking Facebook status:', error)
+    }
+  }
+
+  const handleConnectFacebook = () => {
+    window.location.href = '/api/facebook/connect'
+  }
+
+  const handlePost = async (templateId: string, platform: 'facebook' | 'instagram', caption: string) => {
+    if (!facebookStatus?.connected) {
+      alert('Please connect your Facebook account first')
+      return
+    }
+
+    if (platform === 'instagram' && !facebookStatus.hasInstagram) {
+      alert('Instagram account not connected. Please connect your Instagram Business Account to your Facebook Page.')
+      return
+    }
+
+    setPosting({ ...posting, [`${templateId}-${platform}`]: true })
+
+    try {
+      const response = await fetch('/api/facebook/post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          adTemplateId: templateId,
+          platform,
+          caption,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to post')
+      }
+
+      alert(`Successfully posted to ${platform === 'facebook' ? 'Facebook' : 'Instagram'}!`)
+      loadData() // Reload to show updated status
+    } catch (error: any) {
+      console.error('Error posting:', error)
+      alert(error.message || 'Failed to post. Please try again.')
+    } finally {
+      setPosting({ ...posting, [`${templateId}-${platform}`]: false })
+    }
+  }
 
   const loadData = async () => {
     try {
@@ -48,6 +226,65 @@ export default function AdsPage() {
     }
   }
 
+  const handleCloseForm = () => {
+    setShowForm(false)
+    setFormMode(null)
+    setFormData({
+      service: '',
+      city: '',
+      tone: 'friendly',
+    })
+    setManualData({
+      service: '',
+      city: '',
+      headline: '',
+      body: '',
+      fbCaption: '',
+      craigslistCaption: '',
+      instagramCaption: '',
+    })
+    setAutoPost({ facebook: false, instagram: false })
+  }
+
+  const openManualForm = () => {
+    setManualData({
+      service: '',
+      city: '',
+      headline: '',
+      body: '',
+      fbCaption: '',
+      craigslistCaption: '',
+      instagramCaption: '',
+    })
+    setAutoPost({ facebook: false, instagram: false })
+    setFormMode('manual')
+    setShowForm(true)
+  }
+
+  const openAIForm = () => {
+    setFormMode('ai')
+    setShowForm(true)
+  }
+
+  const openTemplateSelector = () => {
+    setShowTemplateSelector(true)
+  }
+
+  const selectTemplate = (template: PreMadeTemplate) => {
+    setManualData({
+      service: template.service,
+      city: '', // User will fill this in
+      headline: template.headline,
+      body: template.body,
+      fbCaption: template.fbCaption,
+      craigslistCaption: template.craigslistCaption,
+      instagramCaption: template.instagramCaption,
+    })
+    setShowTemplateSelector(false)
+    setFormMode('manual')
+    setShowForm(true)
+  }
+
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!formData.service || !formData.city) {
@@ -73,15 +310,120 @@ export default function AdsPage() {
       }
 
       const data = await response.json()
-      setTemplates([data.template, ...templates])
-      setFormData({ service: '', city: '', tone: 'friendly' })
-      setShowForm(false)
+      setTemplates((prev) => [data.template, ...prev])
+      handleCloseForm()
     } catch (error: any) {
       console.error('Error generating ad:', error)
       const errorMessage = error.message || 'Error generating ad content'
       alert(errorMessage + '\n\nIf this persists, check your GEMINI_API_KEY in .env.local')
     } finally {
       setGenerating(false)
+    }
+  }
+
+  const handleDelete = async (templateId: string) => {
+    if (!confirm('Delete this ad? This cannot be undone.')) {
+      return
+    }
+
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+
+      if (!user) {
+        alert('Please sign in to delete ads.')
+        return
+      }
+
+      const { error } = await supabase
+        .from('ad_templates')
+        .delete()
+        .eq('id', templateId)
+        .eq('user_id', user.id)
+
+      if (error) {
+        throw error
+      }
+
+      setTemplates((prev) => prev.filter((template) => template.id !== templateId))
+    } catch (error: any) {
+      console.error('Error deleting ad:', error)
+      alert(error?.message || 'Failed to delete ad. Please try again.')
+    }
+  }
+
+  const handleManualSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    const trimmed = {
+      service: manualData.service.trim(),
+      city: manualData.city.trim(),
+      headline: manualData.headline.trim(),
+      body: manualData.body.trim(),
+      fbCaption: manualData.fbCaption.trim(),
+      craigslistCaption: manualData.craigslistCaption.trim(),
+      instagramCaption: manualData.instagramCaption.trim(),
+    }
+
+    if (!trimmed.service || !trimmed.city || !trimmed.headline || !trimmed.body) {
+      alert('Please fill in service, city, headline, and body to save your ad.')
+      return
+    }
+
+    setSavingManual(true)
+
+    try {
+      const supabase = createClient()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) {
+        alert('Please sign in to save ads.')
+        return
+      }
+
+      const { data, error } = await supabase
+        .from('ad_templates')
+        .insert({
+          user_id: user.id,
+          service: trimmed.service,
+          city: trimmed.city,
+          headline: trimmed.headline,
+          body: trimmed.body,
+          fb_caption: trimmed.fbCaption || null,
+          craigslist_caption: trimmed.craigslistCaption || null,
+          instagram_caption: trimmed.instagramCaption || null,
+        })
+        .select()
+        .single()
+
+      if (error) {
+        throw error
+      }
+
+      if (data) {
+        setTemplates((prev) => [data, ...prev])
+        // Auto-post if selected
+        try {
+          if (autoPost.facebook) {
+            await handlePost(data.id, 'facebook', trimmed.fbCaption || trimmed.body)
+          }
+          if (autoPost.instagram) {
+            await handlePost(data.id, 'instagram', trimmed.instagramCaption || trimmed.body)
+          }
+        } catch (postErr) {
+          // Errors are already alerted inside handlePost
+        }
+      }
+
+      handleCloseForm()
+    } catch (error: any) {
+      console.error('Error saving ad:', error)
+      const message = error?.message || 'Failed to save ad. Please try again.'
+      alert(message)
+    } finally {
+      setSavingManual(false)
     }
   }
 
@@ -111,6 +453,42 @@ export default function AdsPage() {
             <h1 className="text-4xl font-bold text-white">Ad Manager</h1>
             <p className="text-slate-300 mt-2">Reach customers across platforms</p>
           </div>
+          {!facebookStatus?.connected && (
+            <button
+              onClick={handleConnectFacebook}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors flex items-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              Connect Facebook
+            </button>
+          )}
+          {facebookStatus?.connected && (
+            <div className="flex items-center gap-3">
+            <div className="text-sm text-slate-300">
+              <span className="text-green-400">✓</span> Connected to {facebookStatus.pageName}
+              {facebookStatus.hasInstagram && (
+                <span className="ml-2">
+                  • Instagram: @{facebookStatus.instagramUsername}
+                </span>
+                )}
+              </div>
+              {!facebookStatus.hasInstagram && (
+                <>
+                  <button
+                    onClick={handleConnectFacebook}
+                    className="px-3 py-1.5 bg-purple-600 text-white rounded-md hover:bg-purple-500 transition-colors text-sm"
+                  >
+                    Connect Instagram
+                  </button>
+                  <span className="text-xs text-yellow-400">
+                    Link an Instagram Business account to your Facebook Page to enable posting.
+                  </span>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -135,7 +513,7 @@ export default function AdsPage() {
         <h2 className="text-2xl font-bold text-white mb-6">Create New Ad</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <button
-            onClick={() => setShowForm(true)}
+            onClick={openManualForm}
             className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl hover:shadow-2xl hover:border-blue-500/40 transition-all flex flex-col items-center"
           >
             <div className="w-14 h-14 rounded-lg bg-blue-500/20 flex items-center justify-center mb-3">
@@ -146,7 +524,7 @@ export default function AdsPage() {
             <span className="text-white font-medium">Blank Ad</span>
           </button>
           <button
-            onClick={() => setShowForm(true)}
+            onClick={openTemplateSelector}
             className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl hover:shadow-2xl hover:border-blue-500/40 transition-all flex flex-col items-center"
           >
             <div className="w-14 h-14 rounded-lg bg-yellow-500/20 flex items-center justify-center mb-3">
@@ -157,7 +535,7 @@ export default function AdsPage() {
             <span className="text-white font-medium">Use Template</span>
           </button>
           <button
-            onClick={() => setShowForm(true)}
+            onClick={openAIForm}
             className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl hover:shadow-2xl hover:border-blue-500/40 transition-all flex flex-col items-center"
           >
             <div className="w-14 h-14 rounded-lg bg-purple-500/20 flex items-center justify-center mb-3">
@@ -189,45 +567,88 @@ export default function AdsPage() {
                 key={template.id}
                 className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl hover:shadow-2xl hover:border-blue-500/40 transition-all"
               >
-                <div className="mb-4">
+                <div className="mb-4 flex items-start justify-between gap-4">
+                  <div>
                   <h3 className="font-semibold text-white text-xl mb-2">{template.headline}</h3>
                   <p className="text-sm text-slate-400">
                     {template.service} - {template.city}
                   </p>
+                  </div>
+                  <button
+                    onClick={() => handleDelete(template.id)}
+                    className="text-sm text-red-400 hover:text-red-300 font-medium"
+                  >
+                    Delete
+                  </button>
                 </div>
                 <p className="text-slate-300 mb-4">{template.body}</p>
                 <div className="space-y-3">
                   {template.fb_caption && (
-                    <div className="flex items-center justify-between bg-slate-700/50 rounded-lg p-3 border border-slate-600/50">
-                      <span className="text-sm font-medium text-slate-300">Facebook</span>
-                      <button
-                        onClick={() => copyToClipboard(template.fb_caption!)}
-                        className="text-sm text-blue-400 hover:text-blue-300 font-medium"
-                      >
-                        Copy
-                      </button>
+                    <div className="bg-slate-700/50 rounded-lg p-3 border border-slate-600/50">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-slate-300">Facebook</span>
+                        <div className="flex gap-2">
+                          {facebookStatus?.connected && (
+                            <button
+                              onClick={() => handlePost(template.id, 'facebook', template.fb_caption!)}
+                              disabled={posting[`${template.id}-facebook`]}
+                              className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {posting[`${template.id}-facebook`] ? 'Posting...' : 'Post'}
+                            </button>
+                          )}
+                          <button
+                            onClick={() => copyToClipboard(template.fb_caption!)}
+                            className="text-sm text-blue-400 hover:text-blue-300 font-medium"
+                          >
+                            Copy
+                          </button>
+                        </div>
+                      </div>
+                      <p className="text-xs text-slate-400 line-clamp-2">{template.fb_caption}</p>
                     </div>
                   )}
-                  {template.nextdoor_caption && (
-                    <div className="flex items-center justify-between bg-slate-700/50 rounded-lg p-3 border border-slate-600/50">
-                      <span className="text-sm font-medium text-slate-300">Nextdoor</span>
-                      <button
-                        onClick={() => copyToClipboard(template.nextdoor_caption!)}
-                        className="text-sm text-blue-400 hover:text-blue-300 font-medium"
-                      >
-                        Copy
-                      </button>
+                  {template.craigslist_caption && (
+                    <div className="bg-slate-700/50 rounded-lg p-3 border border-slate-600/50">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-slate-300">Craigslist</span>
+                        <button
+                          onClick={() => copyToClipboard(template.craigslist_caption!)}
+                          className="text-sm text-blue-400 hover:text-blue-300 font-medium"
+                        >
+                          Copy
+                        </button>
+                      </div>
+                      <p className="text-xs text-slate-400 line-clamp-2">{template.craigslist_caption}</p>
+                      <p className="text-xs text-yellow-400 mt-1">Note: Craigslist requires manual posting</p>
                     </div>
                   )}
                   {template.instagram_caption && (
-                    <div className="flex items-center justify-between bg-slate-700/50 rounded-lg p-3 border border-slate-600/50">
-                      <span className="text-sm font-medium text-slate-300">Instagram</span>
-                      <button
-                        onClick={() => copyToClipboard(template.instagram_caption!)}
-                        className="text-sm text-blue-400 hover:text-blue-300 font-medium"
-                      >
-                        Copy
-                      </button>
+                    <div className="bg-slate-700/50 rounded-lg p-3 border border-slate-600/50">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-slate-300">Instagram</span>
+                        <div className="flex gap-2">
+                          {facebookStatus?.connected && facebookStatus.hasInstagram && (
+                            <button
+                              onClick={() => handlePost(template.id, 'instagram', template.instagram_caption!)}
+                              disabled={posting[`${template.id}-instagram`]}
+                              className="text-sm bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {posting[`${template.id}-instagram`] ? 'Posting...' : 'Post'}
+                            </button>
+                          )}
+                          <button
+                            onClick={() => copyToClipboard(template.instagram_caption!)}
+                            className="text-sm text-blue-400 hover:text-blue-300 font-medium"
+                          >
+                            Copy
+                          </button>
+                        </div>
+                      </div>
+                      <p className="text-xs text-slate-400 line-clamp-2">{template.instagram_caption}</p>
+                      {facebookStatus?.connected && !facebookStatus.hasInstagram && (
+                        <p className="text-xs text-yellow-400 mt-1">Connect Instagram Business Account to post</p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -238,9 +659,147 @@ export default function AdsPage() {
       </div>
 
       {/* Generate Ad Form Modal */}
-      {showForm && (
+      {showForm && formMode && (
         <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-800/95 backdrop-blur-xl rounded-xl p-8 w-full max-w-2xl shadow-2xl border border-blue-500/20">
+          <div className="bg-slate-800/95 backdrop-blur-xl rounded-xl p-8 w-full max-w-2xl shadow-2xl border border-blue-500/20 max-h-[90vh] overflow-y-auto">
+            {formMode === 'manual' ? (
+              <>
+                <h2 className="text-2xl font-bold text-white mb-6">Create Blank Ad</h2>
+                <form onSubmit={handleManualSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-300 mb-2">Service</label>
+                      <input
+                        type="text"
+                        value={manualData.service}
+                        onChange={(e) => setManualData({ ...manualData, service: e.target.value })}
+                        required
+                        className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                        placeholder="Drain Cleaning"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-300 mb-2">City</label>
+                      <input
+                        type="text"
+                        value={manualData.city}
+                        onChange={(e) => setManualData({ ...manualData, city: e.target.value })}
+                        required
+                        className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                        placeholder="San Francisco"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">Headline</label>
+                    <input
+                      type="text"
+                      value={manualData.headline}
+                      onChange={(e) => setManualData({ ...manualData, headline: e.target.value })}
+                      required
+                      className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                      placeholder="Catchy headline for your ad"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">Body</label>
+                    <textarea
+                      value={manualData.body}
+                      onChange={(e) => setManualData({ ...manualData, body: e.target.value })}
+                      required
+                      rows={4}
+                      className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                      placeholder="Main description for your ad"
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-300 mb-2">Facebook Caption (optional)</label>
+                      <textarea
+                        value={manualData.fbCaption}
+                        onChange={(e) => setManualData({ ...manualData, fbCaption: e.target.value })}
+                        rows={4}
+                        className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                        placeholder="Copy for Facebook"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-300 mb-2">Craigslist Caption (optional)</label>
+                      <textarea
+                        value={manualData.craigslistCaption}
+                        onChange={(e) => setManualData({ ...manualData, craigslistCaption: e.target.value })}
+                        rows={4}
+                        className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                        placeholder="Copy for Craigslist"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-300 mb-2">Instagram Caption (optional)</label>
+                      <textarea
+                        value={manualData.instagramCaption}
+                        onChange={(e) => setManualData({ ...manualData, instagramCaption: e.target.value })}
+                        rows={4}
+                        className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                        placeholder="Copy for Instagram"
+                      />
+                    </div>
+                  </div>
+                {/* Auto-post options */}
+                <div className="mt-2 rounded-lg border border-slate-600/60 bg-slate-900/40 p-4">
+                  <div className="text-sm font-medium text-slate-300 mb-3">Auto-post after saving</div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <button
+                      type="button"
+                      disabled={!facebookStatus?.connected}
+                      onClick={() => setAutoPost({ ...autoPost, facebook: !autoPost.facebook })}
+                      className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                        autoPost.facebook
+                          ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40'
+                          : 'bg-slate-800/70 text-slate-300 hover:bg-slate-700/80'
+                      } ${!facebookStatus?.connected ? 'opacity-40 cursor-not-allowed' : ''}`}
+                    >
+                      Post to Facebook Page
+                    </button>
+                    <button
+                      type="button"
+                      disabled={!(facebookStatus?.connected && facebookStatus.hasInstagram)}
+                      onClick={() => setAutoPost({ ...autoPost, instagram: !autoPost.instagram })}
+                      className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                        autoPost.instagram
+                          ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/40'
+                          : 'bg-slate-800/70 text-slate-300 hover:bg-slate-700/80'
+                      } ${!(facebookStatus?.connected && facebookStatus.hasInstagram) ? 'opacity-40 cursor-not-allowed' : ''}`}
+                    >
+                      Post to Instagram
+                    </button>
+                  </div>
+                  {!facebookStatus?.connected && (
+                    <p className="mt-2 text-xs text-yellow-400">Connect Facebook to enable auto-posting.</p>
+                  )}
+                  {facebookStatus?.connected && !facebookStatus.hasInstagram && (
+                    <p className="mt-2 text-xs text-yellow-400">Connect Instagram Business Account to enable Instagram auto-posting.</p>
+                  )}
+                </div>
+                  <div className="flex gap-3 pt-4">
+                    <button
+                      type="submit"
+                      disabled={savingManual}
+                      className="flex-1 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-500 disabled:opacity-50 transition-all shadow-lg shadow-blue-500/50"
+                    >
+                      {savingManual ? 'Saving...' : 'Save Ad'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCloseForm}
+                      className="flex-1 rounded-xl border border-slate-600 bg-slate-800/50 px-6 py-3 font-semibold text-slate-300 hover:bg-slate-800/70 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </>
+            ) : (
+              <>
             <h2 className="text-2xl font-bold text-white mb-6">Generate Ad Content</h2>
             <form onSubmit={handleGenerate} className="space-y-6">
               <div>
@@ -294,13 +853,53 @@ export default function AdsPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowForm(false)}
+                      onClick={handleCloseForm}
                   className="flex-1 rounded-xl border border-slate-600 bg-slate-800/50 px-6 py-3 font-semibold text-slate-300 hover:bg-slate-800/70 transition-colors"
                 >
                   Cancel
                 </button>
               </div>
             </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Template Selector Modal */}
+      {showTemplateSelector && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-800/95 backdrop-blur-xl rounded-xl p-8 w-full max-w-4xl shadow-2xl border border-blue-500/20 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-white">Choose a Template</h2>
+              <button
+                onClick={() => setShowTemplateSelector(false)}
+                className="text-slate-400 hover:text-white transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <p className="text-slate-300 mb-6">Select a template to customize and use for your ad. You can edit all fields before saving.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {PRE_MADE_TEMPLATES.map((template, index) => (
+                <button
+                  key={index}
+                  onClick={() => selectTemplate(template)}
+                  className="bg-slate-700/50 hover:bg-slate-700/70 rounded-lg p-4 border border-slate-600/50 hover:border-blue-500/50 transition-all text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-semibold text-blue-400">{template.service}</span>
+                    <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-white font-medium mb-2 line-clamp-1">{template.headline}</h3>
+                  <p className="text-xs text-slate-400 line-clamp-2">{template.body}</p>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
