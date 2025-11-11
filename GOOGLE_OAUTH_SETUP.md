@@ -119,3 +119,4 @@ When deploying to production (e.g., Vercel):
 - [Google OAuth Documentation](https://developers.google.com/identity/protocols/oauth2)
 - [Supabase OAuth Providers](https://supabase.com/docs/guides/auth/social-login/auth-google)
 
+

@@ -145,6 +145,8 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Removed stats band to restore original landing layout */}
+
       {/* Problem/Solution Section */}
       <section className="relative py-24 border-t border-blue-500/20">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
