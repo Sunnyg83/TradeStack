@@ -72,39 +72,39 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-slate-950">
-      {/* Dark Animated Background */}
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-950 to-blue-950">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(14,165,233,0.08),transparent_70%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(56,189,248,0.08),transparent_70%)]"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20"></div>
+    <div className="min-h-screen relative overflow-hidden bg-white">
+      {/* Light Animated Background */}
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_70%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.04),transparent_70%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(59,130,246,0.04),transparent_70%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-30"></div>
       </div>
 
       <div className="relative flex min-h-screen items-center justify-center px-4">
         <div className="w-full max-w-md">
           <div className="mb-8 text-center">
             <Link href="/" className="inline-flex items-center gap-2 mb-8">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/50">
+              <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
                 <span className="text-white font-bold text-lg">T</span>
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
                 TradeStack
               </span>
             </Link>
-            <h1 className="mb-2 text-3xl font-bold text-white">Welcome Back</h1>
-            <p className="text-slate-300">Sign in to your TradeStack account</p>
+            <h1 className="mb-2 text-3xl font-bold text-slate-900">Welcome Back</h1>
+            <p className="text-slate-600">Sign in to your TradeStack account</p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-6 rounded-xl bg-slate-800/60 backdrop-blur-xl border border-blue-500/20 p-8 shadow-xl">
+          <form onSubmit={handleLogin} className="space-y-6 rounded-xl bg-white backdrop-blur-xl border border-slate-200 p-8 shadow-lg">
             {error && (
-              <div className="rounded-lg bg-red-950/30 border border-red-500/20 p-3 text-sm text-red-400">
+              <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-600">
                 {error}
               </div>
             )}
 
             <div>
-              <label htmlFor="email" className="mb-2 block text-sm font-medium text-slate-300">
+              <label htmlFor="email" className="mb-2 block text-sm font-medium text-slate-700">
                 Email
               </label>
               <input
@@ -113,19 +113,19 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-2 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 placeholder="you@example.com"
               />
             </div>
 
             <div>
               <div className="mb-2 flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm font-medium text-slate-300">
+                <label htmlFor="password" className="block text-sm font-medium text-slate-700">
                   Password
                 </label>
                 <Link
                   href="/forgot-password"
-                  className="text-xs text-blue-400 hover:text-blue-300"
+                  className="text-xs text-blue-600 hover:text-blue-500"
                 >
                   Forgot password?
                 </Link>
@@ -136,7 +136,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-2 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 placeholder="••••••••"
               />
             </div>
@@ -144,17 +144,17 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-3 font-semibold text-white transition-all hover:from-blue-500 hover:to-cyan-500 shadow-lg shadow-blue-500/50 hover:shadow-xl disabled:opacity-50"
+              className="w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white transition-all hover:bg-blue-500 shadow-lg shadow-blue-500/30 hover:shadow-xl disabled:opacity-50"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-600"></div>
+                <div className="w-full border-t border-slate-300"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-slate-800/60 text-slate-400">Or continue with</span>
+                <span className="px-2 bg-white text-slate-600">Or continue with</span>
               </div>
             </div>
 
@@ -162,7 +162,7 @@ export default function LoginPage() {
               type="button"
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 rounded-xl border border-slate-600 bg-slate-900/50 px-4 py-3 font-semibold text-white transition-all hover:bg-slate-900/70 hover:border-slate-500 disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-slate-400 disabled:opacity-50"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -186,9 +186,9 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-slate-300">
+          <p className="mt-6 text-center text-slate-600">
             Don't have an account?{' '}
-            <Link href="/signup" className="text-blue-400 hover:text-blue-300 font-medium">
+            <Link href="/signup" className="text-blue-600 hover:text-blue-500 font-medium">
               Sign up
             </Link>
           </p>

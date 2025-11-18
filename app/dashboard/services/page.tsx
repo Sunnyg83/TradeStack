@@ -109,7 +109,7 @@ export default function ServicesPage() {
   if (loading) {
     return (
       <div className="px-4 py-6">
-        <div className="text-slate-300">Loading...</div>
+        <div className="text-slate-600">Loading...</div>
       </div>
     )
   }
@@ -119,8 +119,8 @@ export default function ServicesPage() {
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-white mb-2">Services & Pricing</h1>
-          <p className="text-slate-300">Manage your services and pricing</p>
+          <h1 className="text-4xl font-bold text-slate-900 mb-2">Services & Pricing</h1>
+          <p className="text-slate-600">Manage your services and pricing</p>
         </div>
         <button
           onClick={() => {
@@ -128,7 +128,7 @@ export default function ServicesPage() {
             setFormData({ name: '', description: '', base_price: '', unit: 'service' })
             setShowForm(true)
           }}
-          className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-500 hover:to-cyan-500 transition-all shadow-lg shadow-blue-500/50 flex items-center gap-2"
+          className="bg-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -139,49 +139,49 @@ export default function ServicesPage() {
 
       {/* Add Service Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-800/95 backdrop-blur-xl rounded-xl p-8 w-full max-w-2xl shadow-2xl border border-blue-500/20">
-            <h2 className="text-2xl font-bold text-white mb-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-blue-50 backdrop-blur-xl rounded-xl p-8 w-full max-w-2xl shadow-2xl border border-blue-200">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">
               {editing ? 'Edit Service' : 'Add New Service'}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Service Name *</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Service Name *</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
-                  className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Description</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Description</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={4}
-                  className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Price ($)</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Price ($)</label>
                   <input
                     type="number"
                     step="0.01"
                     value={formData.base_price}
                     onChange={(e) => setFormData({ ...formData, base_price: e.target.value })}
-                    className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Unit</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Unit</label>
                   <input
                     type="text"
                     value={formData.unit}
                     onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
-                    className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                     placeholder="service"
                   />
                 </div>
@@ -189,7 +189,7 @@ export default function ServicesPage() {
               <div className="flex gap-3 pt-4">
                 <button
                   type="submit"
-                  className="flex-1 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 px-6 py-3 font-semibold text-white hover:from-blue-500 hover:to-cyan-500 transition-all shadow-lg shadow-blue-500/50"
+                  className="flex-1 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/30"
                 >
                   {editing ? 'Update Service' : 'Create Service'}
                 </button>
@@ -199,7 +199,7 @@ export default function ServicesPage() {
                     setShowForm(false)
                     setEditing(null)
                   }}
-                  className="flex-1 rounded-xl border border-slate-600 bg-slate-800/50 px-6 py-3 font-semibold text-slate-300 hover:bg-slate-800/70 transition-colors"
+                  className="flex-1 rounded-xl border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
                 >
                   Cancel
                 </button>
@@ -212,40 +212,40 @@ export default function ServicesPage() {
       {/* Services List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {services.length === 0 ? (
-          <div className="col-span-full bg-slate-800/60 backdrop-blur-xl rounded-xl border border-blue-500/20 p-12 text-center shadow-xl">
-            <p className="text-slate-300 text-lg">No services yet.</p>
-            <p className="text-slate-400 text-sm mt-2">Add your first service to get started!</p>
+          <div className="col-span-full bg-blue-50 backdrop-blur-xl rounded-xl border border-blue-200 p-12 text-center shadow-lg">
+            <p className="text-slate-900 text-lg">No services yet.</p>
+            <p className="text-slate-600 text-sm mt-2">Add your first service to get started!</p>
           </div>
         ) : (
           services.map((service) => (
             <div
               key={service.id}
-              className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl hover:shadow-2xl hover:border-blue-500/40 transition-all"
+              className="bg-blue-50 backdrop-blur-xl rounded-xl p-6 border border-blue-200 shadow-lg hover:shadow-xl hover:border-blue-400 transition-all"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <h3 className="font-semibold text-white text-xl mb-2">{service.name}</h3>
-                  <p className="text-slate-400 text-sm mb-4 line-clamp-3">{service.description}</p>
+                  <h3 className="font-semibold text-slate-900 text-xl mb-2">{service.name}</h3>
+                  <p className="text-slate-600 text-sm mb-4 line-clamp-3">{service.description}</p>
                   <div className="flex items-baseline">
-                    <span className="text-blue-400 font-bold text-2xl">
+                    <span className="text-blue-600 font-bold text-2xl">
                       {formatCurrency(service.base_price)}
                     </span>
                     {service.unit && (
-                      <span className="text-slate-400 text-sm ml-2">per {service.unit}</span>
+                      <span className="text-slate-600 text-sm ml-2">per {service.unit}</span>
                     )}
                   </div>
                 </div>
               </div>
-              <div className="flex gap-3 pt-4 border-t border-blue-500/20">
+              <div className="flex gap-3 pt-4 border-t border-blue-200">
                 <button
                   onClick={() => handleEdit(service)}
-                  className="flex-1 bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-lg py-2 px-4 text-sm font-medium hover:bg-blue-500/30 transition-colors"
+                  className="flex-1 bg-blue-100 text-blue-600 border border-blue-200 rounded-lg py-2 px-4 text-sm font-medium hover:bg-blue-200 transition-colors"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(service.id)}
-                  className="flex-1 bg-red-500/20 text-red-300 border border-red-500/30 rounded-lg py-2 px-4 text-sm font-medium hover:bg-red-500/30 transition-colors"
+                  className="flex-1 bg-red-100 text-red-600 border border-red-200 rounded-lg py-2 px-4 text-sm font-medium hover:bg-red-200 transition-colors"
                 >
                   Delete
                 </button>

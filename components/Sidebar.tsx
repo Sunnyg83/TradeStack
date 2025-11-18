@@ -92,14 +92,14 @@ export default function Sidebar() {
   ]
 
   return (
-    <aside className="fixed left-0 top-0 h-full w-64 bg-slate-900/80 backdrop-blur-xl border-r border-blue-500/20 flex flex-col z-40">
+    <aside className="fixed left-0 top-0 h-full w-64 bg-white/80 backdrop-blur-xl border-r border-slate-200 flex flex-col z-40 shadow-sm">
       {/* Logo */}
-      <div className="p-6 border-b border-blue-500/20">
+      <div className="p-6 border-b border-slate-200">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/50">
+          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
             <span className="text-white font-bold text-lg">T</span>
           </div>
-          <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+          <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
             TradeStack
           </span>
         </Link>
@@ -119,8 +119,8 @@ export default function Sidebar() {
                   href={item.href}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     isActive
-                      ? 'bg-blue-500/20 text-blue-300 font-semibold border border-blue-500/30'
-                      : 'text-slate-300 hover:bg-slate-800/50 hover:text-white'
+                      ? 'bg-blue-100 text-blue-600 font-semibold border border-blue-200'
+                      : 'text-slate-700 hover:bg-slate-50 hover:text-blue-600'
                   }`}
                 >
                   {item.icon}
@@ -133,10 +133,10 @@ export default function Sidebar() {
       </nav>
 
       {/* Sign Out */}
-      <div className="p-4 border-t border-blue-500/20">
+      <div className="p-4 border-t border-slate-200">
         <button
           onClick={handleSignOut}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800/50 hover:text-white transition-colors"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

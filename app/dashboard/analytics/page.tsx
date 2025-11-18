@@ -258,7 +258,7 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <div className="px-4 py-6">
-        <div className="text-slate-300">Loading...</div>
+        <div className="text-slate-600">Loading...</div>
       </div>
     )
   }
@@ -267,27 +267,27 @@ export default function AnalyticsPage() {
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-white">Analytics</h1>
-        <p className="mt-2 text-slate-300">Track your leads success and income over time</p>
+        <h1 className="text-4xl font-bold text-slate-900">Analytics</h1>
+        <p className="mt-2 text-slate-600">Track your leads success and income over time</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl">
-          <div className="text-3xl font-bold text-white mb-2">{formatCurrency(totalIncome)}</div>
-          <div className="text-sm font-medium text-slate-300">Total Income</div>
+        <div className="bg-blue-50 backdrop-blur-xl rounded-xl p-6 border border-blue-200 shadow-lg">
+          <div className="text-3xl font-bold text-slate-900 mb-2">{formatCurrency(totalIncome)}</div>
+          <div className="text-sm font-medium text-slate-600">Total Income</div>
         </div>
-        <div className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl">
-          <div className="text-3xl font-bold text-green-400 mb-2">{totalCompleted}</div>
-          <div className="text-sm font-medium text-slate-300">Completed Leads</div>
+        <div className="bg-blue-50 backdrop-blur-xl rounded-xl p-6 border border-blue-200 shadow-lg">
+          <div className="text-3xl font-bold text-green-600 mb-2">{totalCompleted}</div>
+          <div className="text-sm font-medium text-slate-600">Completed Leads</div>
         </div>
-        <div className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl">
-          <div className="text-3xl font-bold text-blue-400 mb-2">{completionRate}%</div>
-          <div className="text-sm font-medium text-slate-300">Completion Rate</div>
+        <div className="bg-blue-50 backdrop-blur-xl rounded-xl p-6 border border-blue-200 shadow-lg">
+          <div className="text-3xl font-bold text-blue-600 mb-2">{completionRate}%</div>
+          <div className="text-sm font-medium text-slate-600">Completion Rate</div>
         </div>
-        <div className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl">
-          <div className="text-3xl font-bold text-purple-400 mb-2">{formatCurrency(avgIncome)}</div>
-          <div className="text-sm font-medium text-slate-300">Avg. Income/Lead</div>
+        <div className="bg-blue-50 backdrop-blur-xl rounded-xl p-6 border border-blue-200 shadow-lg">
+          <div className="text-3xl font-bold text-blue-600 mb-2">{formatCurrency(avgIncome)}</div>
+          <div className="text-sm font-medium text-slate-600">Avg. Income/Lead</div>
         </div>
       </div>
 
@@ -299,8 +299,8 @@ export default function AnalyticsPage() {
             onClick={() => setTimeRange(range)}
             className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
               timeRange === range
-                ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                : 'bg-slate-800/50 text-slate-300 border border-slate-600/50 hover:bg-slate-800/70'
+                ? 'bg-blue-100 text-blue-600 border border-blue-300'
+                : 'bg-blue-50 text-slate-700 border border-blue-200 hover:bg-blue-100'
             }`}
           >
             {range.charAt(0).toUpperCase() + range.slice(1)}
@@ -309,8 +309,8 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Leads Success Over Time */}
-      <div className="mb-8 bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl">
-        <h2 className="text-2xl font-bold text-white mb-6">Leads Success Over Time</h2>
+      <div className="mb-8 bg-blue-50 backdrop-blur-xl rounded-xl p-6 border border-blue-200 shadow-lg">
+        <h2 className="text-2xl font-bold text-slate-900 mb-6">Leads Success Over Time</h2>
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={leadsData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#475569" opacity={0.3} />
@@ -347,8 +347,8 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Income Generated Over Time */}
-      <div className="mb-8 bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl">
-        <h2 className="text-2xl font-bold text-white mb-6">Income Generated Over Time</h2>
+      <div className="mb-8 bg-blue-50 backdrop-blur-xl rounded-xl p-6 border border-blue-200 shadow-lg">
+        <h2 className="text-2xl font-bold text-slate-900 mb-6">Income Generated Over Time</h2>
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={incomeData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#475569" opacity={0.3} />

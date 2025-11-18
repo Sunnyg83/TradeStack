@@ -156,39 +156,39 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-slate-950">
-      {/* Dark Animated Background */}
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-950 to-blue-950">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(14,165,233,0.08),transparent_70%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(56,189,248,0.08),transparent_70%)]"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20"></div>
+    <div className="min-h-screen relative overflow-hidden bg-white">
+      {/* Light Animated Background */}
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_70%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.04),transparent_70%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(59,130,246,0.04),transparent_70%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-30"></div>
       </div>
 
       <div className="relative flex min-h-screen items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           <div className="mb-8 text-center">
             <Link href="/" className="inline-flex items-center gap-2 mb-8">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/50">
+              <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
                 <span className="text-white font-bold text-lg">T</span>
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
                 TradeStack
               </span>
             </Link>
-            <h1 className="mb-2 text-3xl font-bold text-white">Complete Your Profile</h1>
-            <p className="text-slate-300">Tell us about your business to get started</p>
+            <h1 className="mb-2 text-3xl font-bold text-slate-900">Complete Your Profile</h1>
+            <p className="text-slate-600">Tell us about your business to get started</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6 rounded-xl bg-slate-800/60 backdrop-blur-xl border border-blue-500/20 p-8 shadow-xl">
+          <form onSubmit={handleSubmit} className="space-y-6 rounded-xl bg-white backdrop-blur-xl border border-slate-200 p-8 shadow-lg">
             {error && (
-              <div className="rounded-lg bg-red-950/30 border border-red-500/20 p-3 text-sm text-red-400">
+              <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-600">
                 {error}
               </div>
             )}
 
             <div>
-              <label htmlFor="trade" className="mb-2 block text-sm font-medium text-slate-300">
+              <label htmlFor="trade" className="mb-2 block text-sm font-medium text-slate-700">
                 Trade Type *
               </label>
               <select
@@ -196,11 +196,11 @@ export default function OnboardingPage() {
                 value={formData.trade}
                 onChange={(e) => setFormData({ ...formData, trade: e.target.value as Trade })}
                 required
-                className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-2 text-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
               >
                 <option value="">Select your trade</option>
                 {TRADE_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value} className="bg-slate-900">
+                  <option key={option.value} value={option.value} className="bg-white">
                     {option.label}
                   </option>
                 ))}
@@ -208,7 +208,7 @@ export default function OnboardingPage() {
             </div>
 
             <div>
-              <label htmlFor="business_name" className="mb-2 block text-sm font-medium text-slate-300">
+              <label htmlFor="business_name" className="mb-2 block text-sm font-medium text-slate-700">
                 Business Name *
               </label>
               <input
@@ -217,13 +217,13 @@ export default function OnboardingPage() {
                 value={formData.business_name}
                 onChange={(e) => setFormData({ ...formData, business_name: e.target.value })}
                 required
-                className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-2 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 placeholder="John's Plumbing"
               />
             </div>
 
             <div>
-              <label htmlFor="service_area" className="mb-2 block text-sm font-medium text-slate-300">
+              <label htmlFor="service_area" className="mb-2 block text-sm font-medium text-slate-700">
                 Service Area (City/ZIP) *
               </label>
               <input
@@ -232,13 +232,13 @@ export default function OnboardingPage() {
                 value={formData.service_area}
                 onChange={(e) => setFormData({ ...formData, service_area: e.target.value })}
                 required
-                className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-2 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 placeholder="San Francisco, CA or 94102"
               />
             </div>
 
             <div>
-              <label htmlFor="phone" className="mb-2 block text-sm font-medium text-slate-300">
+              <label htmlFor="phone" className="mb-2 block text-sm font-medium text-slate-700">
                 Phone Number
               </label>
               <input
@@ -246,13 +246,13 @@ export default function OnboardingPage() {
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-2 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 placeholder="(555) 123-4567"
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="mb-2 block text-sm font-medium text-slate-300">
+              <label htmlFor="email" className="mb-2 block text-sm font-medium text-slate-700">
                 Business Email
               </label>
               <input
@@ -260,7 +260,7 @@ export default function OnboardingPage() {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-2 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 placeholder="contact@business.com"
               />
             </div>
@@ -268,7 +268,7 @@ export default function OnboardingPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-3 font-semibold text-white transition-all hover:from-blue-500 hover:to-cyan-500 shadow-lg shadow-blue-500/50 hover:shadow-xl disabled:opacity-50"
+              className="w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white transition-all hover:bg-blue-500 shadow-lg shadow-blue-500/30 hover:shadow-xl disabled:opacity-50"
             >
               {loading ? 'Setting up...' : 'Complete Setup'}
             </button>

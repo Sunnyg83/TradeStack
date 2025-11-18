@@ -19,6 +19,8 @@ export default function WebsiteBuilderPage() {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputMessage, setInputMessage] = useState('')
   const [sending, setSending] = useState(false)
+  const [deploying, setDeploying] = useState(false)
+  const [deploymentUrl, setDeploymentUrl] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const chatInputRef = useRef<HTMLTextAreaElement>(null)
 
@@ -32,6 +34,60 @@ export default function WebsiteBuilderPage() {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const autoSaveWebsite = async (htmlToSave?: string) => {
+    if (!websiteSettings) return
+
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const htmlContent = htmlToSave || code || generatedHTML
+      if (!htmlContent) return
+
+      // Check if homepage exists
+      const { data: existingPage } = await supabase
+        .from('website_pages')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('is_homepage', true)
+        .maybeSingle()
+
+      const pageData = {
+        user_id: user.id,
+        title: 'Home',
+        slug: 'home',
+        content: { html: htmlContent },
+        is_homepage: true,
+        is_published: true,
+        order_index: 0,
+        meta_title: websiteSettings.website_slug || 'Home',
+        meta_description: 'Professional business website',
+        updated_at: new Date().toISOString(),
+      }
+
+      if (existingPage) {
+        await supabase
+          .from('website_pages')
+          .update(pageData)
+          .eq('id', existingPage.id)
+      } else {
+        await supabase.from('website_pages').insert(pageData)
+      }
+
+      // Update website settings timestamp
+      await supabase
+        .from('website_settings')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', websiteSettings.id)
+
+      console.log('Website auto-saved successfully')
+    } catch (error) {
+      console.error('Error auto-saving website:', error)
+      // Don't show alert for auto-save failures
+    }
   }
 
   const getPreviewHTML = (html: string): string => {
@@ -204,9 +260,26 @@ export default function WebsiteBuilderPage() {
 
       if (settingsData) {
         setWebsiteSettings(settingsData)
+        // Always set deployment URL from database if it exists (persists after refresh)
+        if (settingsData.custom_domain) {
+          setDeploymentUrl(settingsData.custom_domain)
+        }
         setError(null)
       } else {
         setError('Unable to load website settings. Please ensure the database migration has been run.')
+      }
+      
+      // Also load existing homepage HTML if available
+      const { data: homepage } = await supabase
+        .from('website_pages')
+        .select('content')
+        .eq('user_id', user.id)
+        .eq('is_homepage', true)
+        .maybeSingle()
+      
+      if (homepage?.content?.html) {
+        setGeneratedHTML(homepage.content.html)
+        setCode(homepage.content.html)
       }
     } catch (error) {
       console.error('Error loading data:', error)
@@ -239,6 +312,9 @@ export default function WebsiteBuilderPage() {
 
       setGeneratedHTML(data.html)
       setCode(data.html)
+      
+      // Auto-save after generation
+      await autoSaveWebsite(data.html)
       
       // Add welcome message
       setMessages([{
@@ -285,6 +361,9 @@ export default function WebsiteBuilderPage() {
       setGeneratedHTML(data.html)
       setCode(data.html)
 
+      // Auto-save after update
+      await autoSaveWebsite(data.html)
+
       // Add assistant response
       setMessages([...newMessages, {
         role: 'assistant',
@@ -308,45 +387,7 @@ export default function WebsiteBuilderPage() {
     }
 
     try {
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
-
-      // Check if homepage exists
-      const { data: existingPage } = await supabase
-        .from('website_pages')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('is_homepage', true)
-        .maybeSingle()
-
-      const pageData = {
-        user_id: user.id,
-        title: 'Home',
-        slug: 'home',
-        content: { html: code || generatedHTML },
-        is_homepage: true,
-        is_published: true,
-        order_index: 0,
-        meta_title: websiteSettings.website_slug || 'Home',
-        meta_description: 'Professional business website',
-      }
-
-      if (existingPage) {
-        await supabase
-          .from('website_pages')
-          .update(pageData)
-          .eq('id', existingPage.id)
-      } else {
-        await supabase.from('website_pages').insert(pageData)
-      }
-
-      // Publish website
-      await supabase
-        .from('website_settings')
-        .update({ is_published: true })
-        .eq('id', websiteSettings.id)
-
+      await autoSaveWebsite()
       alert('Website saved and published successfully!')
       loadData()
     } catch (error) {
@@ -355,20 +396,66 @@ export default function WebsiteBuilderPage() {
     }
   }
 
-  const handlePublishToggle = async () => {
-    if (!websiteSettings) return
+  const handleDeploy = async () => {
+    if (!generatedHTML) {
+      alert('Please generate a website first')
+      return
+    }
 
+    setDeploying(true)
     try {
       const supabase = createClient()
-      await supabase
-        .from('website_settings')
-        .update({ is_published: !websiteSettings.is_published })
-        .eq('id', websiteSettings.id)
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        alert('Please sign in to deploy')
+        return
+      }
 
+      // Get profile for website name
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('business_name')
+        .eq('user_id', user.id)
+        .single()
+
+      const websiteName = profile?.business_name || 'My Website'
+      const subdomain = websiteSettings?.website_slug || `site-${user.id.slice(0, 8)}`
+
+      const response = await fetch('/api/website/deploy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          html: generatedHTML,
+          websiteName,
+          subdomain
+        })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to deploy website')
+      }
+
+      // Store deployment URL in state to show in copyable box
+      if (data.deploymentUrl) {
+        setDeploymentUrl(data.deploymentUrl)
+      }
+      
+      // Reload settings to get updated deployment URL
       loadData()
-    } catch (error) {
-      console.error('Error toggling publish:', error)
-      alert('Error updating website status')
+      
+      // Show success message
+      if (data.success) {
+        alert(`Website deployed successfully! The URL is shown below and can be copied.\n\nNote: It may take a few minutes to go live.`)
+      } else {
+        alert(`Deployment initiated. ${data.message || 'Check the URL box below for details.'}`)
+      }
+    } catch (err: any) {
+      console.error('Error deploying:', err)
+      alert(err.message || 'Failed to deploy website. Make sure VERCEL_TOKEN is set in environment variables.')
+    } finally {
+      setDeploying(false)
     }
   }
 
@@ -401,47 +488,109 @@ export default function WebsiteBuilderPage() {
         </div>
       )}
 
+      {/* Deployment URL Box */}
+      {(deploymentUrl || websiteSettings?.custom_domain) && (
+        <div className="mb-6 bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div className="flex-1">
+              <h3 className="text-green-300 font-semibold mb-2">Website Deployed!</h3>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  readOnly
+                  value={deploymentUrl || websiteSettings?.custom_domain || ''}
+                  className="flex-1 rounded-lg bg-slate-800/50 border border-slate-600 px-4 py-2 text-sm text-white font-mono focus:outline-none focus:ring-2 focus:ring-green-500/50"
+                  onClick={(e) => (e.target as HTMLInputElement).select()}
+                />
+                <button
+                  onClick={() => {
+                    const url = deploymentUrl || websiteSettings?.custom_domain || ''
+                    navigator.clipboard.writeText(url)
+                    alert('URL copied to clipboard!')
+                  }}
+                  className="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-green-500"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  Copy
+                </button>
+                <a
+                  href={deploymentUrl || websiteSettings?.custom_domain || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg border border-green-500/50 px-4 py-2 text-sm font-medium text-green-300 transition-all hover:bg-green-500/10"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                  Open
+                </a>
+              </div>
+              <p className="text-green-200/70 text-xs mt-2">Click the input to select, or use the Copy button. It may take a few minutes to go live.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold text-white">Website Builder</h1>
           <p className="mt-2 text-slate-300">Create and customize your website with AI</p>
         </div>
-        <div className="flex items-center gap-4">
-          {websiteSettings?.is_published && websiteUrl && (
+        <div className="flex flex-wrap items-center gap-3">
+          {generatedHTML && (
+            <>
+              <button
+                onClick={handleSaveWebsite}
+                className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition-all hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/40"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Save Changes
+              </button>
+              <button
+                onClick={handleDeploy}
+                disabled={deploying}
+                className="inline-flex items-center gap-2 rounded-lg border border-blue-400/60 px-6 py-3 font-medium text-blue-100 transition-all hover:bg-blue-500/10 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {deploying ? (
+                  <>
+                    <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Deploying…
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    Deploy
+                  </>
+                )}
+              </button>
+            </>
+          )}
+          {websiteUrl && (
             <a
               href={websiteUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-green-500/20 text-green-300 border border-green-500/30 rounded-lg px-4 py-2 text-sm font-medium hover:bg-green-500/30 transition-colors flex items-center gap-2"
+              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 px-6 py-3 font-semibold text-white transition-all hover:from-blue-500 hover:to-cyan-500 shadow-lg shadow-blue-500/50 hover:shadow-xl hover:shadow-blue-500/60"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
               View Website
             </a>
           )}
-          {generatedHTML && (
-            <button
-              onClick={handleSaveWebsite}
-              className="bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              Save & Publish
-            </button>
-          )}
-          <button
-            onClick={handlePublishToggle}
-            className={`rounded-xl px-6 py-3 font-semibold text-white transition-all shadow-lg ${
-              websiteSettings?.is_published
-                ? 'bg-green-600 hover:bg-green-500 shadow-green-500/50'
-                : 'bg-slate-600 hover:bg-slate-500'
-            }`}
-          >
-            {websiteSettings?.is_published ? 'Published' : 'Not Published'}
-          </button>
         </div>
       </div>
 
