@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // Status Badge Component with animated status change
 function StatusBadge({ initialStatus, finalStatus, delay, animationKey }: { 
@@ -241,12 +242,32 @@ function InteractiveChart() {
 }
 
 export default function Home() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [animationKey, setAnimationKey] = useState(0);
   const [activeTab, setActiveTab] = useState(0); // 0: CRM, 1: Analytics, 2: Website, 3: Ads, 4: Invoices
   const dashboardRef = useRef<HTMLDivElement>(null);
   const comparisonRef = useRef<HTMLDivElement>(null);
   const [comparisonKey, setComparisonKey] = useState(0);
+
+  // Handle OAuth callbacks that land on root page
+  useEffect(() => {
+    const code = searchParams.get('code');
+    const error = searchParams.get('error');
+    
+    // If we have OAuth parameters, redirect to the callback handler
+    if (code || error) {
+      const params = new URLSearchParams();
+      if (code) params.set('code', code);
+      if (error) params.set('error', error);
+      const errorDescription = searchParams.get('error_description');
+      if (errorDescription) params.set('error_description', errorDescription);
+      params.set('next', '/home');
+      
+      router.replace(`/auth/callback?${params.toString()}`);
+    }
+  }, [searchParams, router]);
   
   // Different heights for different tabs - adjusted to fit all content
   const tabHeights: Record<number, string> = {

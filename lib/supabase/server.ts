@@ -14,7 +14,27 @@ export async function createClient() {
     {
       cookies: {
         getAll() {
-          return cookieStore.getAll()
+          try {
+            // Filter out corrupted cookies to prevent stale cookie errors
+            const cookies = cookieStore.getAll()
+            return cookies.filter(c => {
+              if (!c.value || c.value.length === 0) return false
+              // Check for corrupted UTF-8 (replacement characters)
+              try {
+                if (c.value.includes('�')) return false
+                // Try to decode to validate
+                decodeURIComponent(c.value)
+                return true
+              } catch {
+                // If decoding fails, filter it out to prevent stale cookie errors
+                return false
+              }
+            })
+          } catch (err) {
+            // If cookie reading fails, return empty array to prevent errors
+            console.warn('Error reading cookies in server client:', err)
+            return []
+          }
         },
         setAll(cookiesToSet) {
           try {

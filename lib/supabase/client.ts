@@ -11,6 +11,7 @@ export function createClient() {
       return createBrowserClient('https://placeholder.supabase.co', 'placeholder-key')
     }
 
+    // Let Supabase handle cookies automatically - it manages PKCE code verifier
     return createBrowserClient(url, key)
   } catch (error) {
     console.error('Error creating Supabase client:', error)

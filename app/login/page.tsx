@@ -18,7 +18,38 @@ export default function LoginPage() {
       const params = new URLSearchParams(window.location.search)
       const errorParam = params.get('error')
       if (errorParam) {
-        setError(decodeURIComponent(errorParam))
+        const errorMsg = decodeURIComponent(errorParam)
+        setError(errorMsg)
+        
+        // If it's a PKCE error, automatically clear cookies and show helpful message
+        if (errorMsg.includes('PKCE') || errorMsg.includes('code verifier')) {
+          // Clear all Supabase cookies automatically
+          const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+          const projectRef = supabaseUrl.match(/https?:\/\/([^.]+)\.supabase\.co/)?.[1] || ''
+          
+          const cookieNames = new Set<string>()
+          document.cookie.split(';').forEach(cookie => {
+            const [name] = cookie.trim().split('=')
+            if (
+              name.startsWith('sb-') ||
+              (projectRef && name.includes(projectRef)) ||
+              name.includes('auth-token') ||
+              name.includes('code-verifier') ||
+              name.includes('verifier')
+            ) {
+              cookieNames.add(name.trim())
+            }
+          })
+          
+          cookieNames.forEach(name => {
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`
+          })
+          
+          // Update error message to be more user-friendly
+          setError('Session expired. Cookies have been cleared automatically. Please try signing in again.')
+        }
+        
         // Clean up URL
         window.history.replaceState({}, '', window.location.pathname)
       }
@@ -53,19 +84,31 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
+      // Start OAuth directly - Supabase will create fresh cookies automatically
+      // Don't clear cookies manually as it can cause encoding issues
       const supabase = createClient()
-      const redirectUrl = `${window.location.origin}/auth/callback`
+      const redirectUrl = `${window.location.origin}/auth/callback?next=/home`
       
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: redirectUrl,
+          skipBrowserRedirect: false,
         },
       })
 
-      if (error) throw error
-      // User will be redirected to Google, then back to callback
+      if (error) {
+        console.error('OAuth error:', error)
+        setError(error.message || 'Failed to sign in with Google')
+        setLoading(false)
+        return
+      }
+
+      if (data?.url) {
+        window.location.href = data.url
+      }
     } catch (error: any) {
+      console.error('Google sign-in error:', error)
       setError(error.message || 'Failed to sign in with Google')
       setLoading(false)
     }
