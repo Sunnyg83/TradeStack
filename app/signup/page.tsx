@@ -17,9 +17,13 @@ export default function SignupPage() {
     setError('')
     setLoading(true)
 
+    console.log('[Signup] Starting signup process...')
+
     try {
       const supabase = createClient()
-      const { error } = await supabase.auth.signUp({
+      console.log('[Signup] Supabase client created')
+      
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -27,12 +31,20 @@ export default function SignupPage() {
         }
       })
 
-      if (error) throw error
+      if (error) {
+        console.error('[Signup] Error:', error)
+        throw error
+      }
+
+      console.log('[Signup] Success! User:', data.user?.id)
+      console.log('[Signup] Session:', data.session ? 'Yes' : 'No')
 
       // Redirect to onboarding after signup
+      console.log('[Signup] Redirecting to onboarding...')
       router.push('/onboarding')
       router.refresh()
     } catch (error: any) {
+      console.error('[Signup] Exception:', error)
       setError(error.message || 'An error occurred')
     } finally {
       setLoading(false)

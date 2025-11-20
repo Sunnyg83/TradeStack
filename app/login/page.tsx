@@ -17,17 +17,28 @@ export default function LoginPage() {
     setError('')
     setLoading(true)
 
+    console.log('[Login] Starting login process...')
+
     try {
       const supabase = createClient()
+      console.log('[Login] Supabase client created')
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
-      if (error) throw error
+      if (error) {
+        console.error('[Login] Error:', error)
+        throw error
+      }
+
+      console.log('[Login] Success! User:', data.user?.id)
+      console.log('[Login] Session:', data.session ? 'Yes' : 'No')
 
       // Check if user has profile
       if (data.user) {
+        console.log('[Login] Checking for profile...')
         const { data: profile } = await supabase
           .from('profiles')
           .select('id')
@@ -36,14 +47,17 @@ export default function LoginPage() {
 
         if (profile) {
           // Has profile -> dashboard
+          console.log('[Login] Profile found, redirecting to dashboard')
           router.push('/dashboard')
         } else {
           // No profile -> onboarding
+          console.log('[Login] No profile, redirecting to onboarding')
           router.push('/onboarding')
         }
         router.refresh()
       }
     } catch (error: any) {
+      console.error('[Login] Exception:', error)
       setError(error.message || 'An error occurred')
     } finally {
       setLoading(false)
