@@ -18,7 +18,12 @@ export async function GET(request: NextRequest) {
     // If we have a code, handle the OAuth callback
     if (code && state) {
       const supabase = await createClient()
-      // No auth check needed anymore
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user) {
+        const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/login`
+        return NextResponse.redirect(dashboardUrl)
+      }
 
       try {
         const stateData = JSON.parse(Buffer.from(state, 'base64').toString())
@@ -153,7 +158,14 @@ export async function GET(request: NextRequest) {
 
     // No code - initiate OAuth flow
     const supabase = await createClient()
-    // No auth check needed anymore
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Not authenticated' },
+        { status: 401 }
+      )
+    }
 
     const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/facebook/connect`
     const appId = process.env.FACEBOOK_APP_ID
