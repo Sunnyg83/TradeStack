@@ -33,21 +33,23 @@ export async function updateSession(request: NextRequest) {
         cookies: {
           getAll() {
             try {
-              // Return cookies - filter out corrupted ones to prevent stale cookie errors
               const cookies = request.cookies.getAll()
-              // Filter out obviously corrupted cookies (empty or invalid)
+              // Filter out corrupted cookies
               return cookies.filter(c => {
                 if (!c.value || c.value.length === 0) return false
-                // Check for corrupted UTF-8 (replacement characters)
-                try {
-                  if (c.value.includes('�')) return false
-                  return true
-                } catch {
+                
+                // Skip if value looks like it's a JSON string (corrupted)
+                if (c.value.startsWith('{"') || c.value.startsWith('%7B%22')) {
+                  console.warn('[Middleware] Skipping corrupted cookie:', c.name)
                   return false
                 }
+                
+                // Check for corrupted/non-UTF8 characters
+                if (c.value.includes('�')) return false
+                
+                return true
               })
             } catch (err) {
-              // If cookie reading fails, return empty array to prevent errors
               console.warn('Error reading cookies in middleware:', err)
               return []
             }
@@ -107,13 +109,23 @@ export async function updateSession(request: NextRequest) {
       data: { user },
     } = await supabase.auth.getUser()
 
+    console.log('[Middleware] Auth check:', {
+      pathname: request.nextUrl.pathname,
+      hasUser: !!user,
+      userId: user?.id,
+      cookieCount: request.cookies.getAll().filter(c => c.name.includes('sb-')).length
+    })
+
     if (
       !user &&
       !request.nextUrl.pathname.startsWith('/login') &&
       !request.nextUrl.pathname.startsWith('/signup') &&
       !request.nextUrl.pathname.startsWith('/forgot-password') &&
       !request.nextUrl.pathname.startsWith('/reset-password') &&
+      !request.nextUrl.pathname.startsWith('/reset-auth') &&
+      !request.nextUrl.pathname.startsWith('/reset') &&
       !request.nextUrl.pathname.startsWith('/auth') &&
+      !request.nextUrl.pathname.startsWith('/clear-cookies') &&
       !request.nextUrl.pathname.startsWith('/api/facebook/connect') &&
       !request.nextUrl.pathname.startsWith('/biz') &&
       !request.nextUrl.pathname.startsWith('/website') &&
@@ -122,11 +134,13 @@ export async function updateSession(request: NextRequest) {
       request.nextUrl.pathname !== '/'
     ) {
       // no user, potentially respond by redirecting the user to the login page
+      console.log('[Middleware] No user found, redirecting to login from:', request.nextUrl.pathname)
       const url = request.nextUrl.clone()
       url.pathname = '/login'
       return NextResponse.redirect(url)
     }
   } catch (error) {
+    console.error('[Middleware] Error checking auth:', error)
     // If auth check fails, allow public routes
     if (
       !request.nextUrl.pathname.startsWith('/dashboard') &&

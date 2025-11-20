@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 // Status Badge Component with animated status change
@@ -241,7 +241,8 @@ function InteractiveChart() {
   );
 }
 
-export default function Home() {
+// Component that uses useSearchParams - must be wrapped in Suspense
+function HomeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -1847,5 +1848,20 @@ export default function Home() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }

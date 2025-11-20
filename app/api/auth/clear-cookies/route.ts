@@ -1,32 +1,26 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server'
 
-export async function GET(request: NextRequest) {
-  const response = NextResponse.next()
+export async function GET() {
+  const cookieStore = await cookies()
+  const allCookies = cookieStore.getAll()
   
-  // Clear all Supabase cookies by setting them to expire
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-  const projectRef = supabaseUrl.match(/https?:\/\/([^.]+)\.supabase\.co/)?.[1] || ''
-  
-  // Get all cookies and clear Supabase ones
-  const allCookies = request.cookies.getAll()
+  let deleted = 0
+  // Delete ALL Supabase cookies
   allCookies.forEach(cookie => {
-    if (
-      cookie.name.startsWith('sb-') ||
-      (projectRef && cookie.name.includes(projectRef)) ||
-      cookie.name.includes('auth-token') ||
-      cookie.name.includes('code-verifier')
-    ) {
-      // Delete the cookie
-      response.cookies.delete(cookie.name)
-      // Also set to expire
-      response.cookies.set(cookie.name, '', {
-        expires: new Date(0),
-        path: '/',
-        maxAge: 0,
-      })
+    if (cookie.name.includes('sb-') || cookie.name.includes('supabase')) {
+      try {
+        cookieStore.delete(cookie.name)
+        deleted++
+      } catch (err) {
+        console.error('Failed to delete cookie:', cookie.name, err)
+      }
     }
   })
   
-  return response
+  return NextResponse.json({ 
+    success: true,
+    deleted,
+    message: `Cleared ${deleted} cookies`
+  })
 }
-

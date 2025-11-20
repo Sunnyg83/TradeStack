@@ -14,37 +14,38 @@ export async function createClient() {
     {
       cookies: {
         getAll() {
-          try {
-            // Filter out corrupted cookies to prevent stale cookie errors
-            const cookies = cookieStore.getAll()
-            return cookies.filter(c => {
-              if (!c.value || c.value.length === 0) return false
-              // Check for corrupted UTF-8 (replacement characters)
+          // Filter out any corrupted cookies
+          const allCookies = cookieStore.getAll()
+          const validCookies = allCookies.filter(cookie => {
+            // Skip if value looks like it's a JSON string (corrupted)
+            if (cookie.value && cookie.value.startsWith('{"')) {
+              console.warn('[Server] Skipping corrupted cookie:', cookie.name)
+              // Delete the corrupted cookie
               try {
-                if (c.value.includes('�')) return false
-                // Try to decode to validate
-                decodeURIComponent(c.value)
-                return true
-              } catch {
-                // If decoding fails, filter it out to prevent stale cookie errors
-                return false
-              }
-            })
-          } catch (err) {
-            // If cookie reading fails, return empty array to prevent errors
-            console.warn('Error reading cookies in server client:', err)
-            return []
-          }
+                cookieStore.delete(cookie.name)
+              } catch {}
+              return false
+            }
+            return true
+          })
+          console.log('[Server] Valid cookies:', validCookies.map(c => c.name))
+          return validCookies
         },
         setAll(cookiesToSet) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
-          } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
+            cookiesToSet.forEach(({ name, value, options }) => {
+              const cookieOptions = {
+                ...options,
+                path: options?.path || '/',
+                sameSite: (options?.sameSite as 'lax' | 'strict' | 'none') || 'lax',
+                secure: process.env.NODE_ENV === 'production',
+                httpOnly: options?.httpOnly ?? false,
+              }
+              cookieStore.set(name, value, cookieOptions)
+              console.log('[Server] Set cookie:', name, 'with options:', cookieOptions)
+            })
+          } catch (error) {
+            console.error('[Server] Error setting cookies:', error)
           }
         },
       },

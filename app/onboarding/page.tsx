@@ -56,18 +56,39 @@ export default function OnboardingPage() {
   useEffect(() => {
     const checkProfile = async () => {
       const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
+      console.log('[Onboarding] Checking if user is authenticated...')
       
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('user_id', user.id)
-          .single()
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      
+      console.log('[Onboarding] User check:', { 
+        hasUser: !!user, 
+        userEmail: user?.email,
+        error: userError?.message 
+      })
+      
+      if (!user) {
+        console.log('[Onboarding] No user found, redirecting to login...')
+        router.push('/login')
+        return
+      }
+      
+      console.log('[Onboarding] Checking if profile exists...')
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single()
 
-        if (profile) {
-          router.push('/dashboard')
-        }
+      console.log('[Onboarding] Profile check:', { 
+        hasProfile: !!profile, 
+        error: profileError?.message 
+      })
+
+      if (profile) {
+        console.log('[Onboarding] Profile exists, redirecting to dashboard...')
+        router.push('/dashboard')
+      } else {
+        console.log('[Onboarding] ✅ No profile found, user can complete onboarding')
       }
     }
     checkProfile()
@@ -80,13 +101,19 @@ export default function OnboardingPage() {
 
     try {
       const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
+      console.log('[Onboarding] Starting profile creation...')
+      
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
 
-      if (!user) {
-        throw new Error('Not authenticated')
+      if (!user || userError) {
+        console.error('[Onboarding] Not authenticated:', userError)
+        throw new Error('Not authenticated. Please sign in again.')
       }
 
+      console.log('[Onboarding] User authenticated:', user.email)
+
       const slug = generateSlug(formData.business_name)
+      console.log('[Onboarding] Generated slug:', slug)
       
       // Check if slug exists
       const { data: existing } = await supabase
@@ -98,9 +125,11 @@ export default function OnboardingPage() {
       let finalSlug = slug
       if (existing) {
         finalSlug = `${slug}-${Date.now()}`
+        console.log('[Onboarding] Slug exists, using:', finalSlug)
       }
 
       // Create profile
+      console.log('[Onboarding] Creating profile...')
       const { error: profileError } = await supabase
         .from('profiles')
         .insert({
@@ -114,11 +143,16 @@ export default function OnboardingPage() {
           slug: finalSlug,
         })
 
-      if (profileError) throw profileError
+      if (profileError) {
+        console.error('[Onboarding] Profile creation error:', profileError)
+        throw profileError
+      }
+      console.log('[Onboarding] ✅ Profile created successfully')
 
       // Create default services
       const services = DEFAULT_SERVICES[formData.trade as Trade]
       if (services) {
+        console.log('[Onboarding] Creating default services...')
         const { error: servicesError } = await supabase
           .from('services')
           .insert(
@@ -132,10 +166,15 @@ export default function OnboardingPage() {
             }))
           )
 
-        if (servicesError) throw servicesError
+        if (servicesError) {
+          console.error('[Onboarding] Services creation error:', servicesError)
+          throw servicesError
+        }
+        console.log('[Onboarding] ✅ Services created successfully')
       }
 
       // Create default settings
+      console.log('[Onboarding] Creating default settings...')
       const { error: settingsError } = await supabase
         .from('settings')
         .insert({
@@ -144,12 +183,18 @@ export default function OnboardingPage() {
           email_from_name: formData.business_name,
         })
 
-      if (settingsError) throw settingsError
+      if (settingsError) {
+        console.error('[Onboarding] Settings creation error:', settingsError)
+        throw settingsError
+      }
+      console.log('[Onboarding] ✅ Settings created successfully')
 
+      console.log('[Onboarding] 🎉 Onboarding complete! Redirecting to dashboard...')
       router.push('/dashboard')
       router.refresh()
     } catch (error: any) {
-      setError(error.message || 'An error occurred')
+      console.error('[Onboarding] Error during onboarding:', error)
+      setError(error.message || 'An error occurred during setup')
     } finally {
       setLoading(false)
     }

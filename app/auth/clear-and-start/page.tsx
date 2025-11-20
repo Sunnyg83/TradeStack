@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-export default function ClearAndStartPage() {
+function ClearAndStartContent() {
   const searchParams = useSearchParams()
   const next = searchParams.get('next') || '/home'
   const retryCount = searchParams.get('retry') || '0'
@@ -82,6 +82,21 @@ export default function ClearAndStartPage() {
         <p className="text-slate-600">Starting Google sign-in...</p>
       </div>
     </div>
+  )
+}
+
+export default function ClearAndStartPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <ClearAndStartContent />
+    </Suspense>
   )
 }
 
