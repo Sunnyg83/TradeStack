@@ -11,17 +11,23 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState('')
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    setSuccess('')
     setLoading(true)
 
     console.log('[Login] Starting login process...')
+    console.log('[Login] Email:', email)
+    console.log('[Login] Password length:', password.length)
 
     try {
       const supabase = createClient()
       console.log('[Login] Supabase client created')
+      
+      setSuccess('Signing in...')
       
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -30,6 +36,7 @@ export default function LoginPage() {
 
       if (error) {
         console.error('[Login] Error:', error)
+        setSuccess('')
         throw error
       }
 
@@ -38,28 +45,37 @@ export default function LoginPage() {
 
       // Check if user has profile
       if (data.user) {
+        setSuccess('Checking profile...')
         console.log('[Login] Checking for profile...')
-        const { data: profile } = await supabase
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('id')
-          .eq('id', data.user.id)
+          .eq('user_id', data.user.id)
           .single()
+
+        console.log('[Login] Profile check result:', { profile, profileError })
 
         if (profile) {
           // Has profile -> dashboard
+          setSuccess('Redirecting to dashboard...')
           console.log('[Login] Profile found, redirecting to dashboard')
-          router.push('/dashboard')
+          setTimeout(() => {
+            router.push('/dashboard')
+            router.refresh()
+          }, 500)
         } else {
           // No profile -> onboarding
+          setSuccess('Redirecting to onboarding...')
           console.log('[Login] No profile, redirecting to onboarding')
-          router.push('/onboarding')
+          setTimeout(() => {
+            router.push('/onboarding')
+            router.refresh()
+          }, 500)
         }
-        router.refresh()
       }
     } catch (error: any) {
       console.error('[Login] Exception:', error)
       setError(error.message || 'An error occurred')
-    } finally {
       setLoading(false)
     }
   }
@@ -92,7 +108,13 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-6 rounded-xl bg-slate-800/60 backdrop-blur-xl border border-blue-500/20 p-8 shadow-xl">
             {error && (
               <div className="rounded-lg bg-red-500/10 border border-red-500/50 p-4 text-red-400 text-sm">
-                {error}
+                ❌ {error}
+              </div>
+            )}
+
+            {success && (
+              <div className="rounded-lg bg-green-500/10 border border-green-500/50 p-4 text-green-400 text-sm">
+                ✅ {success}
               </div>
             )}
 
@@ -129,9 +151,10 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-3 font-semibold text-white transition-all hover:from-blue-500 hover:to-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/50"
+              onClick={() => console.log('[Login] Button clicked!')}
+              className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-3 font-semibold text-white transition-all hover:from-blue-500 hover:to-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/50 hover:scale-105 active:scale-95"
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              {loading ? '⏳ Signing in...' : '🔐 Sign In'}
             </button>
 
             <p className="text-center text-sm text-slate-400">
@@ -141,6 +164,19 @@ export default function LoginPage() {
               </Link>
             </p>
           </form>
+
+          {/* Troubleshooting */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-slate-500 mb-2">Having issues?</p>
+            <div className="flex gap-4 justify-center text-xs">
+              <Link href="/clear-cookies" className="text-blue-400 hover:text-blue-300 hover:underline">
+                🍪 Clear Cookies
+              </Link>
+              <Link href="/test-login" className="text-blue-400 hover:text-blue-300 hover:underline">
+                🧪 Test Login
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>

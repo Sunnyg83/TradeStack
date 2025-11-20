@@ -181,15 +181,21 @@ export default function LeadsPage() {
         ...lead,
       }))
 
-      const { error } = await supabase
+      console.log('[Demo Leads] Inserting leads:', leadsToInsert)
+      
+      const { data, error } = await supabase
         .from('leads')
         .insert(leadsToInsert)
+        .select()
 
       if (error) {
-        console.error('Error creating demo leads:', error)
+        console.error('[Demo Leads] Error:', error)
+        console.error('[Demo Leads] Error details:', JSON.stringify(error, null, 2))
         setDemosCreated(true) // Mark as created even on error to prevent retries
         return
       }
+
+      console.log('[Demo Leads] ✅ Created successfully:', data)
 
       setDemosCreated(true)
       loadLeads()

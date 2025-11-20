@@ -27,6 +27,7 @@ export async function middleware(request: NextRequest) {
     }
   )
 
+  // This will automatically refresh expired sessions
   const { data: { user } } = await supabase.auth.getUser()
 
   // Redirect to login if not authenticated and trying to access protected routes
@@ -37,6 +38,9 @@ export async function middleware(request: NextRequest) {
     !request.nextUrl.pathname.startsWith('/auth') &&
     !request.nextUrl.pathname.startsWith('/api') &&
     !request.nextUrl.pathname.startsWith('/test-auth') &&
+    !request.nextUrl.pathname.startsWith('/test-login') &&
+    !request.nextUrl.pathname.startsWith('/test-signup') &&
+    !request.nextUrl.pathname.startsWith('/clear-cookies') &&
     request.nextUrl.pathname !== '/'
   ) {
     return NextResponse.redirect(new URL('/login', request.url))

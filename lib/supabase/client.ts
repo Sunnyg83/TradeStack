@@ -8,5 +8,6 @@ export function createClient() {
     throw new Error('Missing Supabase environment variables')
   }
 
+  // Use default cookie handling - @supabase/ssr handles this correctly
   return createBrowserClient(url, key)
 }
