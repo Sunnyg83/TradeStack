@@ -54,7 +54,26 @@ export default function OnboardingPage() {
   })
 
   useEffect(() => {
-    // No auth check needed
+    const checkProfile = async () => {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user) {
+        router.push('/login')
+        return
+      }
+      
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single()
+
+      if (profile) {
+        router.push('/dashboard')
+      }
+    }
+    checkProfile()
   }, [router])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -66,9 +85,11 @@ export default function OnboardingPage() {
       const supabase = createClient()
       console.log('[Onboarding] Starting profile creation...')
       
-      // Generate a random user ID since there's no auth
-      const randomUserId = crypto.randomUUID()
-      console.log('[Onboarding] Generated user ID:', randomUserId)
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user) {
+        throw new Error('Not authenticated')
+      }
 
       const slug = generateSlug(formData.business_name)
       console.log('[Onboarding] Generated slug:', slug)
@@ -91,8 +112,8 @@ export default function OnboardingPage() {
       const { error: profileError } = await supabase
         .from('profiles')
         .insert({
-          id: randomUserId,
-          user_id: randomUserId,
+          id: user.id,
+          user_id: user.id,
           trade: formData.trade,
           business_name: formData.business_name,
           service_area: formData.service_area,
@@ -115,7 +136,7 @@ export default function OnboardingPage() {
           .from('services')
           .insert(
             services.map((service) => ({
-              user_id: randomUserId,
+              user_id: user.id,
               name: service.name,
               description: service.description,
               base_price: service.base_price,
@@ -136,7 +157,7 @@ export default function OnboardingPage() {
       const { error: settingsError } = await supabase
         .from('settings')
         .insert({
-          user_id: randomUserId,
+          user_id: user.id,
           ai_prompt_template: `You are a friendly ${formData.trade} professional. Write a warm, professional message to a lead who inquired about {service}. Be concise and ask about their timeline.`,
           email_from_name: formData.business_name,
         })

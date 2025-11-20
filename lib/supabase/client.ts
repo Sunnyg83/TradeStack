@@ -1,4 +1,4 @@
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { createBrowserClient } from '@supabase/ssr'
 
 export function createClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -8,5 +8,5 @@ export function createClient() {
     throw new Error('Missing Supabase environment variables')
   }
 
-  return createSupabaseClient(url, key)
+  return createBrowserClient(url, key)
 }
