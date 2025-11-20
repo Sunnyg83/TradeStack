@@ -53,12 +53,15 @@ export async function GET(request: NextRequest) {
           charges_enabled: account.charges_enabled,
         })
       } else {
+        // Account exists but not fully activated yet
+        // Still return account_id so frontend knows account exists
         return NextResponse.json({
           connected: false,
           account_id: profile.stripe_account_id,
           status: 'pending',
           details_submitted: account.details_submitted,
           charges_enabled: account.charges_enabled,
+          has_account: true, // Indicate account exists even if not active
         })
       }
     } catch (stripeError: any) {

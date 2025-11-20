@@ -539,8 +539,8 @@ export default function WebsiteBuilderPage() {
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-white">Website Builder</h1>
-          <p className="mt-2 text-slate-300">Create and customize your website with AI</p>
+          <h1 className="text-4xl font-bold text-slate-900">Website Builder</h1>
+          <p className="mt-2 text-slate-600">Create and customize your website with AI</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           {generatedHTML && (
@@ -557,22 +557,22 @@ export default function WebsiteBuilderPage() {
               <button
                 onClick={handleDeploy}
                 disabled={deploying}
-                className="inline-flex items-center gap-2 rounded-lg border border-blue-400/60 px-6 py-3 font-medium text-blue-100 transition-all hover:bg-blue-500/10 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-lg border border-blue-400/60 px-6 py-3 font-medium text-slate-900 transition-all hover:bg-blue-500/10 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {deploying ? (
                   <>
-                    <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <svg className="h-5 w-5 animate-spin text-slate-900" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Deploying…
+                    <span className="text-slate-900">Deploying…</span>
                   </>
                 ) : (
                   <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                     </svg>
-                    Deploy
+                    <span className="text-slate-900">Deploy</span>
                   </>
                 )}
               </button>
@@ -599,15 +599,15 @@ export default function WebsiteBuilderPage() {
         {/* Website Preview/Editor - Left Side */}
         <div className="flex-1 flex flex-col gap-4">
           {!generatedHTML ? (
-            <div className="flex-1 bg-slate-800/60 backdrop-blur-xl rounded-xl border border-blue-500/20 shadow-xl flex items-center justify-center p-12">
+            <div className="flex-1 bg-blue-50 backdrop-blur-xl rounded-xl border border-blue-200 shadow-lg flex items-center justify-center p-12">
               <div className="text-center max-w-md">
                 <div className="mb-6">
-                  <svg className="w-24 h-24 mx-auto text-blue-500/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-24 h-24 mx-auto text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-2">AI Website Builder</h3>
-                <p className="text-slate-400 mb-6">
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">AI Website Builder</h3>
+                <p className="text-slate-600 mb-6">
                   Generate your complete website in one click using all your business information!
                 </p>
                 <button
@@ -632,8 +632,8 @@ export default function WebsiteBuilderPage() {
                     </>
                   )}
                 </button>
-                <div className="text-sm text-slate-400 space-y-2 bg-slate-800/50 p-4 rounded-lg mt-6 text-left">
-                  <p className="font-medium text-white mb-2">✨ Your website will include:</p>
+                <div className="text-sm text-slate-600 space-y-2 bg-blue-100 p-4 rounded-lg mt-6 text-left">
+                  <p className="font-medium text-slate-900 mb-2">✨ Your website will include:</p>
                   <ul className="list-disc list-inside space-y-1 ml-2">
                     <li>Your business name and branding</li>
                     <li>All your services with pricing</li>

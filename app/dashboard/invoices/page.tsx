@@ -222,18 +222,6 @@ export default function InvoicesPage() {
         }
       }
 
-      // Check if user needs to connect bank account for payments
-      try {
-        const statusResponse = await fetch('/api/plaid/status')
-        const statusData = await statusResponse.json()
-        if (!statusData.connected && createdInvoiceId) {
-          // Show warning but don't block invoice creation
-          console.warn('Bank account not connected - payments may not work')
-        }
-      } catch (statusError) {
-        // Ignore status check errors
-      }
-
       setShowForm(false)
       setEditing(null)
       setFormData({
@@ -335,8 +323,8 @@ export default function InvoicesPage() {
 
       if (!response.ok) {
         if (data.needs_bank_account) {
-          alert(`Cannot process payment: Bank account not connected.\n\nPlease connect your bank account in Settings to receive payments.\n\nYou'll be redirected to Settings now.`)
-          window.location.href = '/dashboard/settings'
+          alert(`Cannot process payment: Bank account not connected.\n\nPlease connect your Stripe account in Dashboard to receive payments.\n\nYou'll be redirected to Dashboard now.`)
+          window.location.href = '/dashboard'
           return
         }
         throw new Error(data.error || 'Failed to create payment')
@@ -411,15 +399,15 @@ export default function InvoicesPage() {
 
       {/* Invoice Form */}
       {showForm && (
-        <div className="mb-6 bg-slate-800/60 backdrop-blur-xl rounded-xl border border-blue-500/20 shadow-xl p-6">
-          <h2 className="text-2xl font-bold text-white mb-4">
+        <div className="mb-6 bg-blue-50 backdrop-blur-xl rounded-xl border border-blue-200 shadow-lg p-6">
+          <h2 className="text-2xl font-bold text-slate-900 mb-4">
             {editing ? 'Edit Invoice' : 'Create New Invoice'}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Client Information */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label className="block text-sm font-medium text-slate-700 mb-2">
                   Client Name *
                 </label>
                 <input
@@ -427,32 +415,32 @@ export default function InvoicesPage() {
                   required
                   value={formData.client_name}
                   onChange={(e) => setFormData({ ...formData, client_name: e.target.value })}
-                  className="w-full bg-slate-900/50 border border-slate-600 rounded-lg px-4 py-2 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2 text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Client Email <span className="text-red-400">*</span>
-                  <span className="text-xs text-slate-400 ml-2">(Required to send invoice)</span>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Client Email <span className="text-red-600">*</span>
+                  <span className="text-xs text-slate-500 ml-2">(Required to send invoice)</span>
                 </label>
                 <input
                   type="email"
                   value={formData.client_email}
                   onChange={(e) => setFormData({ ...formData, client_email: e.target.value })}
                   placeholder="client@example.com"
-                  className="w-full bg-slate-900/50 border-2 border-blue-500/30 rounded-lg px-4 py-2 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                  className="w-full bg-white border-2 border-blue-300 rounded-lg px-4 py-2 text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label className="block text-sm font-medium text-slate-700 mb-2">
                   Client Phone
                 </label>
                 <input
                   type="tel"
                   value={formData.client_phone}
                   onChange={(e) => setFormData({ ...formData, client_phone: e.target.value })}
-                  className="w-full bg-slate-900/50 border border-slate-600 rounded-lg px-4 py-2 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2 text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                 />
               </div>
             </div>
@@ -461,13 +449,13 @@ export default function InvoicesPage() {
             <div>
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-slate-300">
+                  <label className="block text-sm font-medium text-slate-700">
                     Invoice Items
                   </label>
                   <button
                     type="button"
                     onClick={addItem}
-                    className="text-blue-400 hover:text-blue-300 text-sm font-medium flex items-center gap-2 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20 hover:bg-blue-500/20 transition-colors"
+                    className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-2 bg-blue-100 px-3 py-1.5 rounded-lg border border-blue-200 hover:bg-blue-200 transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -520,7 +508,7 @@ export default function InvoicesPage() {
                           placeholder="e.g., Plumbing Service, Repair Work, Consultation"
                           value={item.description}
                           onChange={(e) => handleItemChange(index, 'description', e.target.value)}
-                          className="w-full bg-slate-800/50 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                          className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                           required
                         />
                       </div>
@@ -548,7 +536,7 @@ export default function InvoicesPage() {
                               handleItemChange(index, 'quantity', 1)
                             }
                           }}
-                          className="w-full bg-slate-800/50 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm text-center focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                          className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm text-center focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                         />
                       </div>
                       
@@ -588,7 +576,7 @@ export default function InvoicesPage() {
                                 }
                               }
                             }}
-                            className="w-full bg-slate-800/50 border-2 border-blue-500/50 rounded-lg pl-10 pr-3 py-2.5 text-white text-lg font-bold focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none placeholder:text-slate-500"
+                            className="w-full bg-white border-2 border-blue-400 rounded-lg pl-10 pr-3 py-2.5 text-slate-900 text-lg font-bold focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none placeholder:text-slate-400"
                             required
                           />
                         </div>
@@ -709,48 +697,48 @@ export default function InvoicesPage() {
       )}
 
       {/* Invoices List */}
-      <div className="bg-slate-800/60 backdrop-blur-xl rounded-xl border border-blue-500/20 shadow-xl overflow-hidden">
+      <div className="bg-blue-50 backdrop-blur-xl rounded-xl border border-blue-200 shadow-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-900/50 border-b border-slate-700">
+            <thead className="bg-blue-100 border-b border-blue-200">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
                   Invoice #
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
                   Client
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
                   Amount
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
                   Due Date
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-700">
+            <tbody className="divide-y divide-blue-200">
               {invoices.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-slate-400">
+                  <td colSpan={6} className="px-6 py-8 text-center text-slate-600">
                     No invoices yet. Create your first invoice to get started.
                   </td>
                 </tr>
               ) : (
                 invoices.map((invoice) => (
-                  <tr key={invoice.id} className="hover:bg-slate-700/30 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                  <tr key={invoice.id} className="hover:bg-blue-100 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
                       {invoice.invoice_number}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
                       {invoice.client_name}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
                       {formatCurrency(invoice.total_amount)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -758,7 +746,7 @@ export default function InvoicesPage() {
                         {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
                       {invoice.due_date ? new Date(invoice.due_date).toLocaleDateString() : '—'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -766,7 +754,7 @@ export default function InvoicesPage() {
                         {invoice.status !== 'paid' && invoice.status !== 'cancelled' && (
                           <button
                             onClick={() => handlePay(invoice)}
-                            className="text-green-400 hover:text-green-300 transition-colors"
+                            className="text-green-600 hover:text-green-700 transition-colors"
                             title="Pay Invoice"
                           >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -777,7 +765,7 @@ export default function InvoicesPage() {
                         {invoice.status === 'draft' && (
                           <button
                             onClick={() => handleSend(invoice)}
-                            className="bg-green-500/20 text-green-300 border border-green-500/30 rounded-lg px-3 py-1.5 hover:bg-green-500/30 transition-colors flex items-center gap-1.5 text-xs font-medium"
+                            className="bg-green-100 text-green-700 border border-green-200 rounded-lg px-3 py-1.5 hover:bg-green-200 transition-colors flex items-center gap-1.5 text-xs font-medium"
                             title="Send Invoice via Email"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -788,7 +776,7 @@ export default function InvoicesPage() {
                         )}
                         <button
                           onClick={() => handleEdit(invoice)}
-                          className="text-blue-400 hover:text-blue-300 transition-colors"
+                          className="text-blue-600 hover:text-blue-700 transition-colors"
                           title="Edit Invoice"
                         >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -797,7 +785,7 @@ export default function InvoicesPage() {
                         </button>
                         <button
                           onClick={() => handleDelete(invoice.id)}
-                          className="text-red-400 hover:text-red-300 transition-colors"
+                          className="text-red-600 hover:text-red-700 transition-colors"
                           title="Delete Invoice"
                         >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

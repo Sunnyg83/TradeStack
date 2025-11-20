@@ -136,8 +136,8 @@ export async function GET(request: NextRequest) {
     const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
     const accountLink = await stripe.accountLinks.create({
       account: account.id,
-      refresh_url: `${origin}/dashboard/settings?stripe_refresh=true`,
-      return_url: `${origin}/dashboard/settings?stripe_success=true`,
+      refresh_url: `${origin}/dashboard?stripe_refresh=true`,
+      return_url: `${origin}/dashboard?stripe_success=true`,
       type: 'account_onboarding',
     })
 

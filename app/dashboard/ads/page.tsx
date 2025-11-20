@@ -435,7 +435,7 @@ export default function AdsPage() {
   if (loading) {
     return (
       <div className="px-4 py-6">
-        <div className="text-slate-300">Loading...</div>
+        <div className="text-slate-900">Loading...</div>
       </div>
     )
   }
@@ -450,8 +450,8 @@ export default function AdsPage() {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-white">Ad Manager</h1>
-            <p className="text-slate-300 mt-2">Reach customers across platforms</p>
+            <h1 className="text-4xl font-bold text-slate-900">Ad Manager</h1>
+            <p className="text-slate-600 mt-2">Reach customers across platforms</p>
           </div>
           {!facebookStatus?.connected && (
             <button
@@ -466,8 +466,8 @@ export default function AdsPage() {
           )}
           {facebookStatus?.connected && (
             <div className="flex items-center gap-3">
-            <div className="text-sm text-slate-300">
-              <span className="text-green-400">✓</span> Connected to {facebookStatus.pageName}
+            <div className="text-sm text-slate-700">
+              <span className="text-green-600">✓</span> Connected to {facebookStatus.pageName}
               {facebookStatus.hasInstagram && (
                 <span className="ml-2">
                   • Instagram: @{facebookStatus.instagramUsername}
@@ -494,99 +494,99 @@ export default function AdsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl">
-          <div className="text-3xl font-bold text-white mb-2">{draftsCount}</div>
-          <div className="text-sm font-medium text-slate-300">Drafts</div>
+        <div className="bg-blue-50 backdrop-blur-xl rounded-xl p-6 border border-blue-200 shadow-lg">
+          <div className="text-3xl font-bold text-slate-900 mb-2">{draftsCount}</div>
+          <div className="text-sm font-medium text-slate-600">Drafts</div>
         </div>
-        <div className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl">
-          <div className="text-3xl font-bold text-white mb-2">{scheduledCount}</div>
-          <div className="text-sm font-medium text-slate-300">Scheduled</div>
+        <div className="bg-blue-50 backdrop-blur-xl rounded-xl p-6 border border-blue-200 shadow-lg">
+          <div className="text-3xl font-bold text-slate-900 mb-2">{scheduledCount}</div>
+          <div className="text-sm font-medium text-slate-600">Scheduled</div>
         </div>
-        <div className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl">
-          <div className="text-3xl font-bold text-white mb-2">{postedCount}</div>
-          <div className="text-sm font-medium text-slate-300">Posted</div>
+        <div className="bg-blue-50 backdrop-blur-xl rounded-xl p-6 border border-blue-200 shadow-lg">
+          <div className="text-3xl font-bold text-slate-900 mb-2">{postedCount}</div>
+          <div className="text-sm font-medium text-slate-600">Posted</div>
         </div>
       </div>
 
       {/* Create New Ad Section */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-6">Create New Ad</h2>
+        <h2 className="text-2xl font-bold text-slate-900 mb-6">Create New Ad</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <button
             onClick={openManualForm}
-            className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl hover:shadow-2xl hover:border-blue-500/40 transition-all flex flex-col items-center"
+            className="bg-blue-50 backdrop-blur-xl rounded-xl p-6 border border-blue-200 shadow-lg hover:shadow-xl hover:border-blue-300 transition-all flex flex-col items-center"
           >
-            <div className="w-14 h-14 rounded-lg bg-blue-500/20 flex items-center justify-center mb-3">
-              <svg className="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-14 h-14 rounded-lg bg-blue-100 flex items-center justify-center mb-3">
+              <svg className="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
             </div>
-            <span className="text-white font-medium">Blank Ad</span>
+            <span className="text-slate-900 font-medium">Blank Ad</span>
           </button>
           <button
             onClick={openTemplateSelector}
-            className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl hover:shadow-2xl hover:border-blue-500/40 transition-all flex flex-col items-center"
+            className="bg-blue-50 backdrop-blur-xl rounded-xl p-6 border border-blue-200 shadow-lg hover:shadow-xl hover:border-blue-300 transition-all flex flex-col items-center"
           >
-            <div className="w-14 h-14 rounded-lg bg-yellow-500/20 flex items-center justify-center mb-3">
-              <svg className="w-7 h-7 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-14 h-14 rounded-lg bg-yellow-100 flex items-center justify-center mb-3">
+              <svg className="w-7 h-7 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
               </svg>
             </div>
-            <span className="text-white font-medium">Use Template</span>
+            <span className="text-slate-900 font-medium">Use Template</span>
           </button>
           <button
             onClick={openAIForm}
-            className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl hover:shadow-2xl hover:border-blue-500/40 transition-all flex flex-col items-center"
+            className="bg-blue-50 backdrop-blur-xl rounded-xl p-6 border border-blue-200 shadow-lg hover:shadow-xl hover:border-blue-300 transition-all flex flex-col items-center"
           >
-            <div className="w-14 h-14 rounded-lg bg-purple-500/20 flex items-center justify-center mb-3">
-              <svg className="w-7 h-7 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-14 h-14 rounded-lg bg-purple-100 flex items-center justify-center mb-3">
+              <svg className="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
               </svg>
             </div>
-            <span className="text-white font-medium">AI Generate</span>
+            <span className="text-slate-900 font-medium">AI Generate</span>
           </button>
         </div>
       </div>
 
       {/* Your Ads Section */}
       <div>
-        <h2 className="text-2xl font-bold text-white mb-6">Your Ads</h2>
+        <h2 className="text-2xl font-bold text-slate-900 mb-6">Your Ads</h2>
         {templates.length === 0 ? (
-          <div className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-12 border border-blue-500/20 shadow-xl flex flex-col items-center justify-center">
-            <div className="w-20 h-20 rounded-lg bg-slate-700/50 flex items-center justify-center mb-4">
-              <svg className="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-blue-50 backdrop-blur-xl rounded-xl p-12 border border-blue-200 shadow-lg flex flex-col items-center justify-center">
+            <div className="w-20 h-20 rounded-lg bg-blue-100 flex items-center justify-center mb-4">
+              <svg className="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
               </svg>
             </div>
-            <p className="text-slate-300 text-lg">No ads yet</p>
+            <p className="text-slate-600 text-lg">No ads yet</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {templates.map((template) => (
               <div
                 key={template.id}
-                className="bg-slate-800/60 backdrop-blur-xl rounded-xl p-6 border border-blue-500/20 shadow-xl hover:shadow-2xl hover:border-blue-500/40 transition-all"
+                className="bg-blue-50 backdrop-blur-xl rounded-xl p-6 border border-blue-200 shadow-lg hover:shadow-xl hover:border-blue-300 transition-all"
               >
                 <div className="mb-4 flex items-start justify-between gap-4">
                   <div>
-                  <h3 className="font-semibold text-white text-xl mb-2">{template.headline}</h3>
-                  <p className="text-sm text-slate-400">
+                  <h3 className="font-semibold text-slate-900 text-xl mb-2">{template.headline}</h3>
+                  <p className="text-sm text-slate-600">
                     {template.service} - {template.city}
                   </p>
                   </div>
                   <button
                     onClick={() => handleDelete(template.id)}
-                    className="text-sm text-red-400 hover:text-red-300 font-medium"
+                    className="text-sm text-red-600 hover:text-red-500 font-medium"
                   >
                     Delete
                   </button>
                 </div>
-                <p className="text-slate-300 mb-4">{template.body}</p>
+                <p className="text-slate-700 mb-4">{template.body}</p>
                 <div className="space-y-3">
                   {template.fb_caption && (
-                    <div className="bg-slate-700/50 rounded-lg p-3 border border-slate-600/50">
+                    <div className="bg-blue-100 rounded-lg p-3 border border-blue-200">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-slate-300">Facebook</span>
+                        <span className="text-sm font-medium text-slate-700">Facebook</span>
                         <div className="flex gap-2">
                           {facebookStatus?.connected && (
                             <button
@@ -599,34 +599,34 @@ export default function AdsPage() {
                           )}
                           <button
                             onClick={() => copyToClipboard(template.fb_caption!)}
-                            className="text-sm text-blue-400 hover:text-blue-300 font-medium"
+                            className="text-sm text-blue-600 hover:text-blue-500 font-medium"
                           >
                             Copy
                           </button>
                         </div>
                       </div>
-                      <p className="text-xs text-slate-400 line-clamp-2">{template.fb_caption}</p>
+                      <p className="text-xs text-slate-600 line-clamp-2">{template.fb_caption}</p>
                     </div>
                   )}
                   {template.craigslist_caption && (
-                    <div className="bg-slate-700/50 rounded-lg p-3 border border-slate-600/50">
+                    <div className="bg-blue-100 rounded-lg p-3 border border-blue-200">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-slate-300">Craigslist</span>
+                        <span className="text-sm font-medium text-slate-700">Craigslist</span>
                         <button
                           onClick={() => copyToClipboard(template.craigslist_caption!)}
-                          className="text-sm text-blue-400 hover:text-blue-300 font-medium"
+                          className="text-sm text-blue-600 hover:text-blue-500 font-medium"
                         >
                           Copy
                         </button>
                       </div>
-                      <p className="text-xs text-slate-400 line-clamp-2">{template.craigslist_caption}</p>
-                      <p className="text-xs text-yellow-400 mt-1">Note: Craigslist requires manual posting</p>
+                      <p className="text-xs text-slate-600 line-clamp-2">{template.craigslist_caption}</p>
+                      <p className="text-xs text-yellow-600 mt-1">Note: Craigslist requires manual posting</p>
                     </div>
                   )}
                   {template.instagram_caption && (
-                    <div className="bg-slate-700/50 rounded-lg p-3 border border-slate-600/50">
+                    <div className="bg-blue-100 rounded-lg p-3 border border-blue-200">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-slate-300">Instagram</span>
+                        <span className="text-sm font-medium text-slate-700">Instagram</span>
                         <div className="flex gap-2">
                           {facebookStatus?.connected && facebookStatus.hasInstagram && (
                             <button
@@ -639,15 +639,15 @@ export default function AdsPage() {
                           )}
                           <button
                             onClick={() => copyToClipboard(template.instagram_caption!)}
-                            className="text-sm text-blue-400 hover:text-blue-300 font-medium"
+                            className="text-sm text-blue-600 hover:text-blue-500 font-medium"
                           >
                             Copy
                           </button>
                         </div>
                       </div>
-                      <p className="text-xs text-slate-400 line-clamp-2">{template.instagram_caption}</p>
+                      <p className="text-xs text-slate-600 line-clamp-2">{template.instagram_caption}</p>
                       {facebookStatus?.connected && !facebookStatus.hasInstagram && (
-                        <p className="text-xs text-yellow-400 mt-1">Connect Instagram Business Account to post</p>
+                        <p className="text-xs text-yellow-600 mt-1">Connect Instagram Business Account to post</p>
                       )}
                     </div>
                   )}
@@ -661,92 +661,92 @@ export default function AdsPage() {
       {/* Generate Ad Form Modal */}
       {showForm && formMode && (
         <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-800/95 backdrop-blur-xl rounded-xl p-8 w-full max-w-2xl shadow-2xl border border-blue-500/20 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl p-8 w-full max-w-2xl shadow-2xl border border-blue-200 max-h-[90vh] overflow-y-auto">
             {formMode === 'manual' ? (
               <>
-                <h2 className="text-2xl font-bold text-white mb-6">Create Blank Ad</h2>
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">Create Blank Ad</h2>
                 <form onSubmit={handleManualSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-slate-300 mb-2">Service</label>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Service</label>
                       <input
                         type="text"
                         value={manualData.service}
                         onChange={(e) => setManualData({ ...manualData, service: e.target.value })}
                         required
-                        className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                        className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                         placeholder="Drain Cleaning"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-300 mb-2">City</label>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">City</label>
                       <input
                         type="text"
                         value={manualData.city}
                         onChange={(e) => setManualData({ ...manualData, city: e.target.value })}
                         required
-                        className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                        className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                         placeholder="San Francisco"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">Headline</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Headline</label>
                     <input
                       type="text"
                       value={manualData.headline}
                       onChange={(e) => setManualData({ ...manualData, headline: e.target.value })}
                       required
-                      className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                      className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                       placeholder="Catchy headline for your ad"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">Body</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Body</label>
                     <textarea
                       value={manualData.body}
                       onChange={(e) => setManualData({ ...manualData, body: e.target.value })}
                       required
                       rows={4}
-                      className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                      className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                       placeholder="Main description for your ad"
                     />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-slate-300 mb-2">Facebook Caption (optional)</label>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Facebook Caption (optional)</label>
                       <textarea
                         value={manualData.fbCaption}
                         onChange={(e) => setManualData({ ...manualData, fbCaption: e.target.value })}
                         rows={4}
-                        className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                        className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                         placeholder="Copy for Facebook"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-300 mb-2">Craigslist Caption (optional)</label>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Craigslist Caption (optional)</label>
                       <textarea
                         value={manualData.craigslistCaption}
                         onChange={(e) => setManualData({ ...manualData, craigslistCaption: e.target.value })}
                         rows={4}
-                        className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                        className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                         placeholder="Copy for Craigslist"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-300 mb-2">Instagram Caption (optional)</label>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Instagram Caption (optional)</label>
                       <textarea
                         value={manualData.instagramCaption}
                         onChange={(e) => setManualData({ ...manualData, instagramCaption: e.target.value })}
                         rows={4}
-                        className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                        className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                         placeholder="Copy for Instagram"
                       />
                     </div>
                   </div>
                 {/* Auto-post options */}
-                <div className="mt-2 rounded-lg border border-slate-600/60 bg-slate-900/40 p-4">
-                  <div className="text-sm font-medium text-slate-300 mb-3">Auto-post after saving</div>
+                <div className="mt-2 rounded-lg border border-blue-200 bg-blue-100 p-4">
+                  <div className="text-sm font-medium text-slate-700 mb-3">Auto-post after saving</div>
                   <div className="flex flex-wrap items-center gap-3">
                     <button
                       type="button"
@@ -755,7 +755,7 @@ export default function AdsPage() {
                       className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
                         autoPost.facebook
                           ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40'
-                          : 'bg-slate-800/70 text-slate-300 hover:bg-slate-700/80'
+                          : 'bg-white text-slate-700 hover:bg-blue-50'
                       } ${!facebookStatus?.connected ? 'opacity-40 cursor-not-allowed' : ''}`}
                     >
                       Post to Facebook Page
@@ -767,7 +767,7 @@ export default function AdsPage() {
                       className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
                         autoPost.instagram
                           ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/40'
-                          : 'bg-slate-800/70 text-slate-300 hover:bg-slate-700/80'
+                          : 'bg-white text-slate-700 hover:bg-purple-50'
                       } ${!(facebookStatus?.connected && facebookStatus.hasInstagram) ? 'opacity-40 cursor-not-allowed' : ''}`}
                     >
                       Post to Instagram
@@ -791,7 +791,7 @@ export default function AdsPage() {
                     <button
                       type="button"
                       onClick={handleCloseForm}
-                      className="flex-1 rounded-xl border border-slate-600 bg-slate-800/50 px-6 py-3 font-semibold text-slate-300 hover:bg-slate-800/70 transition-colors"
+                      className="flex-1 rounded-xl border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
                     >
                       Cancel
                     </button>
@@ -800,19 +800,19 @@ export default function AdsPage() {
               </>
             ) : (
               <>
-            <h2 className="text-2xl font-bold text-white mb-6">Generate Ad Content</h2>
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">Generate Ad Content</h2>
             <form onSubmit={handleGenerate} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">Service</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Service</label>
                 <select
                   value={formData.service}
                   onChange={(e) => setFormData({ ...formData, service: e.target.value })}
                   required
-                  className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                 >
-                  <option value="" className="bg-slate-900">Select a service</option>
+                  <option value="" className="bg-white">Select a service</option>
                   {services.map((service) => (
-                    <option key={service.id} value={service.name} className="bg-slate-900">
+                    <option key={service.id} value={service.name} className="bg-white">
                       {service.name}
                     </option>
                   ))}
@@ -820,26 +820,26 @@ export default function AdsPage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">City</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">City</label>
                   <input
                     type="text"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                     required
-                    className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                     placeholder="San Francisco"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Tone</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Tone</label>
                   <select
                     value={formData.tone}
                     onChange={(e) => setFormData({ ...formData, tone: e.target.value })}
-                    className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-3 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                   >
-                    <option value="friendly" className="bg-slate-900">Friendly</option>
-                    <option value="professional" className="bg-slate-900">Professional</option>
-                    <option value="casual" className="bg-slate-900">Casual</option>
+                    <option value="friendly" className="bg-white">Friendly</option>
+                    <option value="professional" className="bg-white">Professional</option>
+                    <option value="casual" className="bg-white">Casual</option>
                   </select>
                 </div>
               </div>
@@ -854,7 +854,7 @@ export default function AdsPage() {
                 <button
                   type="button"
                       onClick={handleCloseForm}
-                  className="flex-1 rounded-xl border border-slate-600 bg-slate-800/50 px-6 py-3 font-semibold text-slate-300 hover:bg-slate-800/70 transition-colors"
+                  className="flex-1 rounded-xl border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
                 >
                   Cancel
                 </button>
@@ -869,34 +869,34 @@ export default function AdsPage() {
       {/* Template Selector Modal */}
       {showTemplateSelector && (
         <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-800/95 backdrop-blur-xl rounded-xl p-8 w-full max-w-4xl shadow-2xl border border-blue-500/20 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl p-8 w-full max-w-4xl shadow-2xl border border-blue-200 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-white">Choose a Template</h2>
+              <h2 className="text-2xl font-bold text-slate-900">Choose a Template</h2>
               <button
                 onClick={() => setShowTemplateSelector(false)}
-                className="text-slate-400 hover:text-white transition-colors"
+                className="text-slate-600 hover:text-slate-900 transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-            <p className="text-slate-300 mb-6">Select a template to customize and use for your ad. You can edit all fields before saving.</p>
+            <p className="text-slate-700 mb-6">Select a template to customize and use for your ad. You can edit all fields before saving.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {PRE_MADE_TEMPLATES.map((template, index) => (
                 <button
                   key={index}
                   onClick={() => selectTemplate(template)}
-                  className="bg-slate-700/50 hover:bg-slate-700/70 rounded-lg p-4 border border-slate-600/50 hover:border-blue-500/50 transition-all text-left"
+                  className="bg-blue-50 hover:bg-blue-100 rounded-lg p-4 border border-blue-200 hover:border-blue-300 transition-all text-left"
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-semibold text-blue-400">{template.service}</span>
-                    <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span className="text-sm font-semibold text-blue-600">{template.service}</span>
+                    <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
-                  <h3 className="text-white font-medium mb-2 line-clamp-1">{template.headline}</h3>
-                  <p className="text-xs text-slate-400 line-clamp-2">{template.body}</p>
+                  <h3 className="text-slate-900 font-medium mb-2 line-clamp-1">{template.headline}</h3>
+                  <p className="text-xs text-slate-600 line-clamp-2">{template.body}</p>
                 </button>
               ))}
             </div>
