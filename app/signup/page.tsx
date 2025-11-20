@@ -66,13 +66,13 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-slate-950">
-      {/* Dark Animated Background */}
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-950 to-blue-950">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(14,165,233,0.08),transparent_70%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(56,189,248,0.08),transparent_70%)]"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20"></div>
+    <div className="min-h-screen relative overflow-hidden bg-white">
+      {/* Light Animated Background */}
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_70%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.04),transparent_70%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(59,130,246,0.04),transparent_70%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-50"></div>
       </div>
 
       <div className="relative flex min-h-screen items-center justify-center px-4 py-12">
@@ -86,11 +86,11 @@ export default function SignupPage() {
                 TradeStack
               </span>
             </Link>
-            <h1 className="mb-2 text-3xl font-bold text-white">Create Account</h1>
-            <p className="text-slate-300">Get started with your free account</p>
+            <h1 className="mb-2 text-3xl font-bold text-slate-900">Create Account</h1>
+            <p className="text-slate-600">Get started with your free account</p>
           </div>
 
-          <form onSubmit={handleSignup} className="space-y-6 rounded-xl bg-slate-800/60 backdrop-blur-xl border border-blue-500/20 p-8 shadow-xl">
+          <form onSubmit={handleSignup} className="space-y-6 rounded-xl bg-white/80 backdrop-blur-xl border border-slate-200 p-8 shadow-xl">
             {error && (
               <div className="rounded-lg bg-red-500/10 border border-red-500/50 p-4 text-red-400 text-sm">
                 ❌ {error}
@@ -104,7 +104,7 @@ export default function SignupPage() {
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
                 Email
               </label>
               <input
@@ -113,13 +113,13 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-2 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 placeholder="you@example.com"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-2">
                 Password
               </label>
               <input
@@ -128,7 +128,7 @@ export default function SignupPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full rounded-lg border border-slate-600 bg-slate-900/50 px-4 py-2 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 placeholder="••••••••"
               />
             </div>
@@ -142,9 +142,9 @@ export default function SignupPage() {
               {loading ? '⏳ Creating account...' : '✨ Create Account'}
             </button>
 
-            <p className="text-center text-sm text-slate-400">
+            <p className="text-center text-sm text-slate-600">
               Already have an account?{' '}
-              <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium">
+              <Link href="/login" className="text-blue-600 hover:text-blue-500 font-medium">
                 Sign in
               </Link>
             </p>
@@ -154,10 +154,10 @@ export default function SignupPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-slate-500 mb-2">Having issues?</p>
             <div className="flex gap-4 justify-center text-xs">
-              <Link href="/clear-cookies" className="text-blue-400 hover:text-blue-300 hover:underline">
+              <Link href="/clear-cookies" className="text-blue-600 hover:text-blue-500 hover:underline">
                 🍪 Clear Cookies
               </Link>
-              <Link href="/test-signup" className="text-blue-400 hover:text-blue-300 hover:underline">
+              <Link href="/test-signup" className="text-blue-600 hover:text-blue-500 hover:underline">
                 🧪 Test Signup
               </Link>
             </div>
