@@ -164,19 +164,6 @@ export default function LoginPage() {
               </Link>
             </p>
           </form>
-
-          {/* Troubleshooting */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-slate-500 mb-2">Having issues?</p>
-            <div className="flex gap-4 justify-center text-xs">
-              <Link href="/clear-cookies" className="text-blue-600 hover:text-blue-500 hover:underline">
-                🍪 Clear Cookies
-              </Link>
-              <Link href="/test-login" className="text-blue-600 hover:text-blue-500 hover:underline">
-                🧪 Test Login
-              </Link>
-            </div>
-          </div>
         </div>
       </div>
     </div>
