@@ -4,41 +4,31 @@ import Link from 'next/link'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) {
-    redirect('/login')
-  }
-
-  // Get profile
-  const { data: profile } = await supabase
+  // Get all profiles (no auth check)
+  const { data: profiles } = await supabase
     .from('profiles')
     .select('*')
-    .eq('user_id', user.id)
-    .single()
+    .limit(1)
 
-  if (!profile) {
-    redirect('/onboarding')
-  }
+  const profile = profiles?.[0] || null
 
-  // Get stats
+  // Get stats (no user filtering)
   const { data: services } = await supabase
     .from('services')
     .select('id')
-    .eq('user_id', user.id)
     .eq('is_active', true)
 
   const { data: leads } = await supabase
     .from('leads')
     .select('id, status')
-    .eq('user_id', user.id)
 
   const newLeads = leads?.filter((l) => l.status === 'new').length || 0
   const totalLeads = leads?.length || 0
   const totalServices = services?.length || 0
 
-  // Get user initial
-  const userInitial = profile.business_name.charAt(0).toUpperCase()
+  // Get profile initial
+  const userInitial = profile?.business_name?.charAt(0).toUpperCase() || 'U'
 
   return (
     <div>
@@ -47,7 +37,7 @@ export default async function DashboardPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold text-slate-900">Dashboard</h1>
-            <p className="text-slate-600 mt-2">Welcome back, {profile.business_name}</p>
+            <p className="text-slate-600 mt-2">Welcome back{profile ? `, ${profile.business_name}` : ''}!</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">

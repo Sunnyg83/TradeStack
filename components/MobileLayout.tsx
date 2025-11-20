@@ -2,8 +2,6 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
 
 interface MobileLayoutProps {
   children: React.ReactNode
@@ -11,14 +9,6 @@ interface MobileLayoutProps {
 
 export default function MobileLayout({ children }: MobileLayoutProps) {
   const pathname = usePathname()
-  const router = useRouter()
-
-  const handleSignOut = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/login')
-    router.refresh()
-  }
 
   const navItems = [
     { href: '/dashboard', label: 'Home', icon: '🏠' },

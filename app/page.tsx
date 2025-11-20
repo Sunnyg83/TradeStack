@@ -282,7 +282,7 @@ function HomeContent() {
   const faqs = [
     {
       question: "How quickly can I get started?",
-      answer: "You can set up your TradeStack account in just 5 minutes. Simply sign up, complete the onboarding, and start managing your leads immediately."
+      answer: "You can set up TradeStack in just 5 minutes. Get started immediately and begin managing your leads right away."
     },
     {
       question: "Do I need a credit card to start?",
@@ -429,7 +429,7 @@ function HomeContent() {
 
             {/* CTA Button */}
             <Link
-              href="/signup"
+              href="/onboarding"
               className="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-105"
             >
               Get Started
@@ -461,7 +461,7 @@ function HomeContent() {
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up animation-delay-400 mb-8 mt-6">
                   <Link
-                    href="/signup"
+                    href="/onboarding"
                     className="group inline-flex items-center justify-center rounded-xl bg-blue-600 px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-blue-500 shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/40 hover:scale-105"
                   >
                     Start Free — No Credit Card
@@ -1676,7 +1676,7 @@ function HomeContent() {
               </div>
               <p className="text-slate-600 text-sm mb-6">Perfect for getting started</p>
               <Link
-                href="/signup"
+                href="/onboarding"
                 className="block w-full text-center py-3 px-6 bg-slate-200 text-slate-900 font-semibold rounded-lg hover:bg-slate-300 transition-colors mb-8"
               >
                 Get Started
@@ -1703,7 +1703,7 @@ function HomeContent() {
               </div>
               <p className="text-slate-600 text-sm mb-6">For growing businesses</p>
               <Link
-                href="/signup"
+                href="/onboarding"
                 className="block w-full text-center py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/30 mb-8"
               >
                 Get Started
@@ -1727,7 +1727,7 @@ function HomeContent() {
               </div>
               <p className="text-slate-600 text-sm mb-6">For teams and agencies</p>
               <Link
-                href="/signup"
+                href="/onboarding"
                 className="block w-full text-center py-3 px-6 bg-slate-200 text-slate-900 font-semibold rounded-lg hover:bg-slate-300 transition-colors mb-8"
               >
                 Get Started
@@ -1793,7 +1793,7 @@ function HomeContent() {
             TradeStack empowers you to manage your business and grow faster.
           </p>
           <Link
-            href="/signup"
+            href="/onboarding"
             className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-blue-500 shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/40 hover:scale-105"
           >
             Get Started

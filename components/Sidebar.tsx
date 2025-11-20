@@ -1,19 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { usePathname } from 'next/navigation'
 
 export default function Sidebar() {
   const pathname = usePathname()
-  const router = useRouter()
-
-  const handleSignOut = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/login')
-    router.refresh()
-  }
 
   const navItems = [
     { 
@@ -132,18 +123,6 @@ export default function Sidebar() {
         </ul>
       </nav>
 
-      {/* Sign Out */}
-      <div className="p-4 border-t border-slate-200">
-        <button
-          onClick={handleSignOut}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-          <span>Sign Out</span>
-        </button>
-      </div>
     </aside>
   )
 }
